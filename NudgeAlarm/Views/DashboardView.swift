@@ -131,7 +131,7 @@ public struct DashboardView: View {
                     }
                 }
             }
-            .navigationTitle("NudgeAlarm")
+            .navigationTitle("PulseWake")
             .toolbar {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarLeading) {

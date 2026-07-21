@@ -42,7 +42,7 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
         cancelAlarm(alarm) // Remove existing triggers
         
         let content = UNMutableNotificationContent()
-        content.title = "⏰ NUDGE ALARM: \(alarm.label)"
+        content.title = "⚡️ PULSE WAKE: \(alarm.label)"
         content.body = "Time for \(alarm.targetReps) \(alarm.exerciseType.rawValue)! Complete exercise to turn off sound."
         content.sound = UNNotificationSound.defaultRingtone
         content.categoryIdentifier = "ALARM_CATEGORY"
