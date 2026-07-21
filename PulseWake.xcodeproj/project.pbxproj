@@ -1,0 +1,281 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A00000012C4EF00000000001 /* NudgeAlarmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000012C4EF00000000001 /* NudgeAlarmApp.swift */; };
+		A00000022C4EF00000000002 /* AlarmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000022C4EF00000000002 /* AlarmModel.swift */; };
+		A00000032C4EF00000000003 /* WorkoutHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000032C4EF00000000003 /* WorkoutHistoryModel.swift */; };
+		A00000042C4EF00000000004 /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000042C4EF00000000004 /* AlarmManager.swift */; };
+		A00000052C4EF00000000005 /* MotionVisionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000052C4EF00000000005 /* MotionVisionEngine.swift */; };
+		A00000062C4EF00000000006 /* PullUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000062C4EF00000000006 /* PullUpDetector.swift */; };
+		A00000072C4EF00000000007 /* PushUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000072C4EF00000000007 /* PushUpDetector.swift */; };
+		A00000082C4EF00000000008 /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000082C4EF00000000008 /* SoundEngine.swift */; };
+		A00000092C4EF00000000009 /* AlarmEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000092C4EF00000000009 /* AlarmEditView.swift */; };
+		A00000102C4EF00000000010 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000102C4EF00000000010 /* CameraPreviewView.swift */; };
+		A00000112C4EF00000000011 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000112C4EF00000000011 /* DashboardView.swift */; };
+		A00000122C4EF00000000012 /* ExerciseVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000122C4EF00000000012 /* ExerciseVerificationView.swift */; };
+		A00000132C4EF00000000013 /* PoseOverlayCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */; };
+		A00000142C4EF00000000014 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000142C4EF00000000014 /* StatsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B00000012C4EF00000000001 /* PulseWake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PulseWake.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F00000012C4EF00000000001 /* NudgeAlarmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeAlarmApp.swift; sourceTree = "<group>"; };
+		F00000022C4EF00000000002 /* AlarmModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AlarmModel.swift; sourceTree = "<group>"; };
+		F00000032C4EF00000000003 /* WorkoutHistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/WorkoutHistoryModel.swift; sourceTree = "<group>"; };
+		F00000042C4EF00000000004 /* AlarmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/AlarmManager.swift; sourceTree = "<group>"; };
+		F00000052C4EF00000000005 /* MotionVisionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/MotionVisionEngine.swift; sourceTree = "<group>"; };
+		F00000062C4EF00000000006 /* PullUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PullUpDetector.swift; sourceTree = "<group>"; };
+		F00000072C4EF00000000007 /* PushUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PushUpDetector.swift; sourceTree = "<group>"; };
+		F00000082C4EF00000000008 /* SoundEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SoundEngine.swift; sourceTree = "<group>"; };
+		F00000092C4EF00000000009 /* AlarmEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AlarmEditView.swift; sourceTree = "<group>"; };
+		F00000102C4EF00000000010 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/CameraPreviewView.swift; sourceTree = "<group>"; };
+		F00000112C4EF00000000011 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/DashboardView.swift; sourceTree = "<group>"; };
+		F00000122C4EF00000000012 /* ExerciseVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ExerciseVerificationView.swift; sourceTree = "<group>"; };
+		F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/PoseOverlayCanvas.swift; sourceTree = "<group>"; };
+		F00000142C4EF00000000014 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/StatsView.swift; sourceTree = "<group>"; };
+		F00000152C4EF00000000015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C00000012C4EF00000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		G00000012C4EF00000000001 = {
+			isa = PBXGroup;
+			children = (
+				G00000022C4EF00000000002 /* PulseWake */,
+				B00000012C4EF00000000001 /* PulseWake.app */,
+			);
+			sourceTree = "<group>";
+		};
+		G00000022C4EF00000000002 /* PulseWake */ = {
+			isa = PBXGroup;
+			children = (
+				F00000012C4EF00000000001 /* NudgeAlarmApp.swift */,
+				F00000152C4EF00000000015 /* Info.plist */,
+				F00000022C4EF00000000002 /* AlarmModel.swift */,
+				F00000032C4EF00000000003 /* WorkoutHistoryModel.swift */,
+				F00000042C4EF00000000004 /* AlarmManager.swift */,
+				F00000052C4EF00000000005 /* MotionVisionEngine.swift */,
+				F00000062C4EF00000000006 /* PullUpDetector.swift */,
+				F00000072C4EF00000000007 /* PushUpDetector.swift */,
+				F00000082C4EF00000000008 /* SoundEngine.swift */,
+				F00000092C4EF00000000009 /* AlarmEditView.swift */,
+				F00000102C4EF00000000010 /* CameraPreviewView.swift */,
+				F00000112C4EF00000000011 /* DashboardView.swift */,
+				F00000122C4EF00000000012 /* ExerciseVerificationView.swift */,
+				F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */,
+				F00000142C4EF00000000014 /* StatsView.swift */,
+			);
+			path = NudgeAlarm;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		T00000012C4EF00000000001 /* PulseWake */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E00000012C4EF00000000001 /* Build configuration list for PBXNativeTarget "PulseWake" */;
+			buildPhases = (
+				R00000012C4EF00000000001 /* Auto Increment Build Version */,
+				S00000012C4EF00000000001 /* Sources */,
+				C00000012C4EF00000000001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PulseWake;
+			productName = PulseWake;
+			productReference = B00000012C4EF00000000001 /* PulseWake.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		P00000012C4EF00000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					T00000012C4EF00000000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = E00000022C4EF00000000002 /* Build configuration list for PBXProject "PulseWake" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = G00000012C4EF00000000001;
+			productRefGroup = G00000012C4EF00000000001;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				T00000012C4EF00000000001 /* PulseWake */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		R00000012C4EF00000000001 /* Auto Increment Build Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Auto Increment Build Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "INFOPLIST_PATH=\"${PROJECT_DIR}/NudgeAlarm/Info.plist\"\nif [ -f \"$INFOPLIST_PATH\" ]; then\n    BUILD_NUMBER=$(date +%Y%m%d%H%M)\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUILD_NUMBER\" \"$INFOPLIST_PATH\" || true\n    echo \"Updated CFBundleVersion to $BUILD_NUMBER\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		S00000012C4EF00000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A00000012C4EF00000000001 /* NudgeAlarmApp.swift in Sources */,
+				A00000022C4EF00000000002 /* AlarmModel.swift in Sources */,
+				A00000032C4EF00000000003 /* WorkoutHistoryModel.swift in Sources */,
+				A00000042C4EF00000000004 /* AlarmManager.swift in Sources */,
+				A00000052C4EF00000000005 /* MotionVisionEngine.swift in Sources */,
+				A00000062C4EF00000000006 /* PullUpDetector.swift in Sources */,
+				A00000072C4EF00000000007 /* PushUpDetector.swift in Sources */,
+				A00000082C4EF00000000008 /* SoundEngine.swift in Sources */,
+				A00000092C4EF00000000009 /* AlarmEditView.swift in Sources */,
+				A00000102C4EF00000000010 /* CameraPreviewView.swift in Sources */,
+				A00000112C4EF00000000011 /* DashboardView.swift in Sources */,
+				A00000122C4EF00000000012 /* ExerciseVerificationView.swift in Sources */,
+				A00000132C4EF00000000013 /* PoseOverlayCanvas.swift in Sources */,
+				A00000142C4EF00000000014 /* StatsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D00000012C4EF00000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NudgeAlarm/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nudge.alarm.NudgeAlarm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_TARGETS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D00000022C4EF00000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NudgeAlarm/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nudge.alarm.NudgeAlarm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_TARGETS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D00000032C4EF00000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D00000042C4EF00000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E00000012C4EF00000000001 /* Build configuration list for PBXNativeTarget "PulseWake" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D00000012C4EF00000000001 /* Debug */,
+				D00000022C4EF00000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E00000022C4EF00000000002 /* Build configuration list for PBXProject "PulseWake" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D00000032C4EF00000000003 /* Debug */,
+				D00000042C4EF00000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = P00000012C4EF00000000001 /* Project object */;
+}
