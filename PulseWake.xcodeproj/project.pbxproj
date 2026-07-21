@@ -21,6 +21,7 @@
 		A00000122C4EF00000000012 /* ExerciseVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000122C4EF00000000012 /* ExerciseVerificationView.swift */; };
 		A00000132C4EF00000000013 /* PoseOverlayCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */; };
 		A00000142C4EF00000000014 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000142C4EF00000000014 /* StatsView.swift */; };
+		A00000152C4EF00000000015 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000162C4EF00000000016 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/PoseOverlayCanvas.swift; sourceTree = "<group>"; };
 		F00000142C4EF00000000014 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/StatsView.swift; sourceTree = "<group>"; };
 		F00000152C4EF00000000015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F00000162C4EF00000000016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,11 +81,23 @@
 				F00000122C4EF00000000012 /* ExerciseVerificationView.swift */,
 				F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */,
 				F00000142C4EF00000000014 /* StatsView.swift */,
+				F00000162C4EF00000000016 /* Assets.xcassets */,
 			);
 			path = NudgeAlarm;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
+
+/* Begin PBXResourcesBuildPhase section */
+		RES000012C4EF00000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A00000152C4EF00000000015 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		T00000012C4EF00000000001 /* PulseWake */ = {
@@ -93,6 +107,7 @@
 				R00000012C4EF00000000001 /* Auto Increment Build Version */,
 				S00000012C4EF00000000001 /* Sources */,
 				C00000012C4EF00000000001 /* Frameworks */,
+				RES000012C4EF00000000001 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -201,7 +216,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nudge.alarm.NudgeAlarm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepankarboro.pulsewake;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_TARGETS = YES;
 				SWIFT_VERSION = 5.0;
@@ -228,7 +243,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nudge.alarm.NudgeAlarm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepankarboro.pulsewake;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_TARGETS = YES;
 				SWIFT_VERSION = 5.0;
