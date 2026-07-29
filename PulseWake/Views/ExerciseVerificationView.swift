@@ -234,9 +234,14 @@ public struct ExerciseVerificationView: View {
                         Spacer()
 
                         if exerciseType == .pushUp {
-                            Text("Elbow: \(Int(engine.pushUpDetector.currentElbowAngle))°")
-                                .font(.caption.monospaced())
-                                .foregroundColor(.cyan)
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text(engine.pushUpDetector.placement.rawValue)
+                                    .font(.caption2)
+                                    .foregroundColor(.gray)
+                                Text("Depth: \(Int(engine.pushUpDetector.bodyDropRatio * 100))% · Elbow \(Int(engine.pushUpDetector.currentElbowAngle))°")
+                                    .font(.caption.monospaced())
+                                    .foregroundColor(.cyan)
+                            }
                         }
                     }
                     .padding(.horizontal, 16)
