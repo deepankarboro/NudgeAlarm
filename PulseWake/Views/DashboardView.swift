@@ -7,7 +7,7 @@ public struct DashboardView: View {
     
     @State private var showingAddAlarmSheet = false
     @State private var alarmToEdit: AlarmModel?
-    @State private var activeVerificationTest: (ExerciseType, Int, String)?
+    @State private var activeVerificationTest: VerificationTestSession?
     @State private var showingStatsSheet = false
     
     private var nextActiveAlarm: AlarmModel? {
@@ -109,15 +109,18 @@ public struct DashboardView: View {
                     
                     // Instant Test Exercise Verification Button
                     Button(action: {
-                        // Launch interactive test using current settings or default 5 pushups
-                        let type = nextActiveAlarm?.exerciseType ?? .pushUp
-                        let reps = 5
-                        activeVerificationTest = (type, reps, "Test Alarm Run")
+                        let alarm = nextActiveAlarm
+                        activeVerificationTest = VerificationTestSession(
+                            exerciseType: alarm?.exerciseType ?? .pushUp,
+                            targetReps: alarm?.targetReps ?? 5,
+                            label: alarm.map { "Test: \($0.label)" } ?? "Test Alarm Run",
+                            soundName: alarm?.soundName ?? "Beep"
+                        )
                     }) {
                         HStack(spacing: 10) {
                             Image(systemName: "play.circle.fill")
                                 .font(.title3)
-                            Text("Test Exercise Camera Verification Now")
+                            Text("Test Full Alarm Flow Now")
                                 .font(.subheadline.bold())
                         }
                         .foregroundColor(.black)
@@ -171,22 +174,22 @@ public struct DashboardView: View {
             .sheet(isPresented: $showingStatsSheet) {
                 StatsView()
             }
-            .fullScreenCover(item: Binding(
-                get: { activeVerificationTest.map { IdentifiableTest(type: $0.0, reps: $0.1, label: $0.2) } },
-                set: { if $0 == nil { activeVerificationTest = nil } }
-            )) { test in
+            .fullScreenCover(item: $activeVerificationTest) { test in
                 ExerciseVerificationView(
-                    exerciseType: test.type,
+                    exerciseType: test.exerciseType,
                     targetReps: test.reps,
                     alarmLabel: test.label,
+                    alarmSoundName: test.soundName,
                     onComplete: {
                         activeVerificationTest = nil
                     }
                 )
+                .interactiveDismissDisabled(true)
             }
         }
         .onAppear {
             AlarmManager.shared.requestPermissions()
+            WorkoutSensorHub.shared.requestPermissions()
         }
     }
     
@@ -200,11 +203,19 @@ public struct DashboardView: View {
     }
 }
 
-public struct IdentifiableTest: Identifiable {
+public struct VerificationTestSession: Identifiable {
     public let id = UUID()
-    public let type: ExerciseType
+    public let exerciseType: ExerciseType
     public let reps: Int
     public let label: String
+    public let soundName: String
+
+    public init(exerciseType: ExerciseType, targetReps: Int, label: String, soundName: String) {
+        self.exerciseType = exerciseType
+        self.reps = targetReps
+        self.label = label
+        self.soundName = soundName
+    }
 }
 
 public struct AlarmRowView: View {

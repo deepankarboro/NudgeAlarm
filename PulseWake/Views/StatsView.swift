@@ -4,6 +4,7 @@ import SwiftData
 public struct StatsView: View {
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \WorkoutHistoryModel.timestamp, order: .reverse) private var logs: [WorkoutHistoryModel]
+    @Bindable private var health = HealthKitManager.shared
     
     private var totalPushUps: Int {
         logs.filter { $0.exerciseType == .pushUp }.reduce(0) { $0 + $1.completedReps }
@@ -32,6 +33,18 @@ public struct StatsView: View {
                         }
                         .padding(.horizontal, 16)
                         .padding(.top, 10)
+
+                        if health.isAvailable {
+                            HStack(spacing: 12) {
+                                StatCard(
+                                    title: "Steps Today",
+                                    value: health.isAuthorized ? "\(health.todayStepCount)" : "—",
+                                    icon: "shoeprints.fill",
+                                    color: .mint
+                                )
+                            }
+                            .padding(.horizontal, 16)
+                        }
                         
                         // Recent Workout History
                         VStack(alignment: .leading, spacing: 12) {
@@ -88,7 +101,7 @@ public struct StatsView: View {
                     }
                 }
             }
-            .navigationTitle("Nudge Metrics")
+            .navigationTitle("PulseWake Metrics")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -100,6 +113,13 @@ public struct StatsView: View {
                     .bold()
                     .foregroundColor(.cyan)
                 }
+            }
+        }
+        .onAppear {
+            if health.isAvailable && !health.isAuthorized {
+                health.requestAuthorization()
+            } else {
+                health.refreshTodayStepCount()
             }
         }
     }

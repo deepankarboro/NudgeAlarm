@@ -12,11 +12,13 @@ public struct AlarmEditView: View {
     @State private var selectedExercise: ExerciseType = .pushUp
     @State private var targetReps: Int = 10
     @State private var selectedDays: Set<Int> = [2, 3, 4, 5, 6] // Mon-Fri default
-    @State private var soundName: String = "Radar Loud"
+    @State private var soundName: String = "Beep"
     
     private let dayLabels = [
         (1, "Sun"), (2, "Mon"), (3, "Tue"), (4, "Wed"), (5, "Thu"), (6, "Fri"), (7, "Sat")
     ]
+    
+    private let availableSounds = AlarmManager.availableSounds
     
     public init(alarmToEdit: AlarmModel? = nil) {
         self.alarmToEdit = alarmToEdit
@@ -65,8 +67,17 @@ public struct AlarmEditView: View {
                                 .foregroundColor(.cyan)
                         }
                     }
+                    
+                    Picker("Alarm Sound", selection: $soundName) {
+                        ForEach(availableSounds, id: \.self) { sound in
+                            Text(sound).tag(sound)
+                        }
+                    }
+                    .onChange(of: soundName) { _, newSound in
+                        SoundEngine.shared.previewAlarmSound(named: newSound)
+                    }
                 } header: {
-                    Text("Nudge Exercise Configuration")
+                    Text("PulseWake Exercise Configuration")
                 } footer: {
                     Text(selectedExercise.instructions)
                         .font(.caption)
@@ -98,7 +109,7 @@ public struct AlarmEditView: View {
                     Text("Repeat Days")
                 }
             }
-            .navigationTitle(alarmToEdit == nil ? "New Nudge Alarm" : "Edit Alarm")
+            .navigationTitle(alarmToEdit == nil ? "New PulseWake Alarm" : "Edit Alarm")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -125,6 +136,9 @@ public struct AlarmEditView: View {
                     self.selectedDays = alarm.repeatDays
                     self.soundName = alarm.soundName
                 }
+            }
+            .onDisappear {
+                SoundEngine.shared.stopAlarmSoundPreview()
             }
         }
     }

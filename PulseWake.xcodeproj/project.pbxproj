@@ -8,42 +8,67 @@
 
 /* Begin PBXBuildFile section */
 		A00000012C4EF00000000001 /* NudgeAlarmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000012C4EF00000000001 /* NudgeAlarmApp.swift */; };
-		A00000022C4EF00000000002 /* AlarmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000022C4EF00000000002 /* AlarmModel.swift */; };
-		A00000032C4EF00000000003 /* WorkoutHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000032C4EF00000000003 /* WorkoutHistoryModel.swift */; };
-		A00000042C4EF00000000004 /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000042C4EF00000000004 /* AlarmManager.swift */; };
-		A00000052C4EF00000000005 /* MotionVisionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000052C4EF00000000005 /* MotionVisionEngine.swift */; };
-		A00000062C4EF00000000006 /* PullUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000062C4EF00000000006 /* PullUpDetector.swift */; };
-		A00000072C4EF00000000007 /* PushUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000072C4EF00000000007 /* PushUpDetector.swift */; };
-		A00000082C4EF00000000008 /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000082C4EF00000000008 /* SoundEngine.swift */; };
-		A00000092C4EF00000000009 /* AlarmEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000092C4EF00000000009 /* AlarmEditView.swift */; };
-		A00000102C4EF00000000010 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000102C4EF00000000010 /* CameraPreviewView.swift */; };
-		A00000112C4EF00000000011 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000112C4EF00000000011 /* DashboardView.swift */; };
-		A00000122C4EF00000000012 /* ExerciseVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000122C4EF00000000012 /* ExerciseVerificationView.swift */; };
-		A00000132C4EF00000000013 /* PoseOverlayCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */; };
-		A00000142C4EF00000000014 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000142C4EF00000000014 /* StatsView.swift */; };
-		A00000152C4EF00000000015 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000162C4EF00000000016 /* Assets.xcassets */; };
-		A00000162C4EF00000000016 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F00000172C4EF00000000017 /* LaunchScreen.storyboard */; };
+		A00000022C4EF00000000002 /* Models/AlarmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000022C4EF00000000002 /* Models/AlarmModel.swift */; };
+		A00000032C4EF00000000003 /* Models/WorkoutHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000032C4EF00000000003 /* Models/WorkoutHistoryModel.swift */; };
+		A00000042C4EF00000000004 /* Services/AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000042C4EF00000000004 /* Services/AlarmManager.swift */; };
+		A00000052C4EF00000000005 /* Services/MotionVisionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000052C4EF00000000005 /* Services/MotionVisionEngine.swift */; };
+		A00000062C4EF00000000006 /* Services/PullUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000062C4EF00000000006 /* Services/PullUpDetector.swift */; };
+		A00000072C4EF00000000007 /* Services/PushUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000072C4EF00000000007 /* Services/PushUpDetector.swift */; };
+		A00000082C4EF00000000008 /* Services/SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000082C4EF00000000008 /* Services/SoundEngine.swift */; };
+		A00000092C4EF00000000009 /* Views/AlarmEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000092C4EF00000000009 /* Views/AlarmEditView.swift */; };
+		A00000102C4EF00000000010 /* Views/CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000102C4EF00000000010 /* Views/CameraPreviewView.swift */; };
+		A00000112C4EF00000000011 /* Views/DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000112C4EF00000000011 /* Views/DashboardView.swift */; };
+		A00000122C4EF00000000012 /* Views/ExerciseVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000122C4EF00000000012 /* Views/ExerciseVerificationView.swift */; };
+		A00000132C4EF00000000013 /* Views/PoseOverlayCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000132C4EF00000000013 /* Views/PoseOverlayCanvas.swift */; };
+		A00000142C4EF00000000014 /* Views/StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000142C4EF00000000014 /* Views/StatsView.swift */; };
+		A00000152C4EF00000000015 /* Views/RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000182C4EF00000000018 /* Views/RootView.swift */; };
+		A00000172C4EF00000000018 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000162C4EF00000000016 /* Assets.xcassets */; };
+		A00000182C4EF00000000019 /* Services/HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000192C4EF00000000019 /* Services/HealthKitManager.swift */; };
+		A00000192C4EF00000000020 /* Services/WorkoutSensorHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000202C4EF00000000020 /* Services/WorkoutSensorHub.swift */; };
+		A00000202C4EF00000000021 /* Views/WorkoutCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000232C4EF00000000023 /* Views/WorkoutCelebrationView.swift */; };
+		A10000012C4EF00000000001 /* Beep.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000012C4EF00000000001 /* Beep.mp3 */; };
+		A10000022C4EF00000000002 /* Carjack.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000022C4EF00000000002 /* Carjack.mp3 */; };
+		A10000032C4EF00000000003 /* Chiptune.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000032C4EF00000000003 /* Chiptune.mp3 */; };
+		A10000042C4EF00000000004 /* Clock Alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000042C4EF00000000004 /* Clock Alarm.mp3 */; };
+		A10000052C4EF00000000005 /* Digital Alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000052C4EF00000000005 /* Digital Alarm.mp3 */; };
+		A10000062C4EF00000000006 /* Mellow.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000062C4EF00000000006 /* Mellow.mp3 */; };
+		A10000072C4EF00000000007 /* Oversimplified.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000072C4EF00000000007 /* Oversimplified.mp3 */; };
+		A10000082C4EF00000000008 /* Star Dust.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000082C4EF00000000008 /* Star Dust.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B00000012C4EF00000000001 /* PulseWake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PulseWake.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F00000012C4EF00000000001 /* NudgeAlarmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeAlarmApp.swift; sourceTree = "<group>"; };
-		F00000022C4EF00000000002 /* AlarmModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AlarmModel.swift; sourceTree = "<group>"; };
-		F00000032C4EF00000000003 /* WorkoutHistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/WorkoutHistoryModel.swift; sourceTree = "<group>"; };
-		F00000042C4EF00000000004 /* AlarmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/AlarmManager.swift; sourceTree = "<group>"; };
-		F00000052C4EF00000000005 /* MotionVisionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/MotionVisionEngine.swift; sourceTree = "<group>"; };
-		F00000062C4EF00000000006 /* PullUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PullUpDetector.swift; sourceTree = "<group>"; };
-		F00000072C4EF00000000007 /* PushUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PushUpDetector.swift; sourceTree = "<group>"; };
-		F00000082C4EF00000000008 /* SoundEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SoundEngine.swift; sourceTree = "<group>"; };
-		F00000092C4EF00000000009 /* AlarmEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AlarmEditView.swift; sourceTree = "<group>"; };
-		F00000102C4EF00000000010 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/CameraPreviewView.swift; sourceTree = "<group>"; };
-		F00000112C4EF00000000011 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/DashboardView.swift; sourceTree = "<group>"; };
-		F00000122C4EF00000000012 /* ExerciseVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ExerciseVerificationView.swift; sourceTree = "<group>"; };
-		F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/PoseOverlayCanvas.swift; sourceTree = "<group>"; };
-		F00000142C4EF00000000014 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/StatsView.swift; sourceTree = "<group>"; };
+		F00000022C4EF00000000002 /* Models/AlarmModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AlarmModel.swift; sourceTree = "<group>"; };
+		F00000032C4EF00000000003 /* Models/WorkoutHistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/WorkoutHistoryModel.swift; sourceTree = "<group>"; };
+		F00000042C4EF00000000004 /* Services/AlarmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/AlarmManager.swift; sourceTree = "<group>"; };
+		F00000052C4EF00000000005 /* Services/MotionVisionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/MotionVisionEngine.swift; sourceTree = "<group>"; };
+		F00000062C4EF00000000006 /* Services/PullUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PullUpDetector.swift; sourceTree = "<group>"; };
+		F00000072C4EF00000000007 /* Services/PushUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PushUpDetector.swift; sourceTree = "<group>"; };
+		F00000082C4EF00000000008 /* Services/SoundEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SoundEngine.swift; sourceTree = "<group>"; };
+		F00000092C4EF00000000009 /* Views/AlarmEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AlarmEditView.swift; sourceTree = "<group>"; };
+		F00000102C4EF00000000010 /* Views/CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/CameraPreviewView.swift; sourceTree = "<group>"; };
+		F00000112C4EF00000000011 /* Views/DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/DashboardView.swift; sourceTree = "<group>"; };
+		F00000122C4EF00000000012 /* Views/ExerciseVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ExerciseVerificationView.swift; sourceTree = "<group>"; };
+		F00000132C4EF00000000013 /* Views/PoseOverlayCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/PoseOverlayCanvas.swift; sourceTree = "<group>"; };
+		F00000142C4EF00000000014 /* Views/StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/StatsView.swift; sourceTree = "<group>"; };
 		F00000152C4EF00000000015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F00000162C4EF00000000016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F00000172C4EF00000000017 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F00000182C4EF00000000018 /* Views/RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/RootView.swift; sourceTree = "<group>"; };
+		F00000192C4EF00000000019 /* Services/HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/HealthKitManager.swift; sourceTree = "<group>"; };
+		F00000202C4EF00000000020 /* Services/WorkoutSensorHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/WorkoutSensorHub.swift; sourceTree = "<group>"; };
+		F00000212C4EF00000000021 /* PulseWake.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PulseWake.entitlements; sourceTree = "<group>"; };
+		F00000222C4EF00000000022 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
+		F00000232C4EF00000000023 /* Views/WorkoutCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WorkoutCelebrationView.swift; sourceTree = "<group>"; };
+		F10000012C4EF00000000001 /* Beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Beep.mp3; sourceTree = "<group>"; };
+		F10000022C4EF00000000002 /* Carjack.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Carjack.mp3; sourceTree = "<group>"; };
+		F10000032C4EF00000000003 /* Chiptune.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Chiptune.mp3; sourceTree = "<group>"; };
+		F10000042C4EF00000000004 /* Clock Alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Clock Alarm.mp3"; sourceTree = "<group>"; };
+		F10000052C4EF00000000005 /* Digital Alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Digital Alarm.mp3"; sourceTree = "<group>"; };
+		F10000062C4EF00000000006 /* Mellow.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Mellow.mp3; sourceTree = "<group>"; };
+		F10000072C4EF00000000007 /* Oversimplified.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Oversimplified.mp3; sourceTree = "<group>"; };
+		F10000082C4EF00000000008 /* Star Dust.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Star Dust.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,45 +95,54 @@
 			children = (
 				F00000012C4EF00000000001 /* NudgeAlarmApp.swift */,
 				F00000152C4EF00000000015 /* Info.plist */,
-				F00000022C4EF00000000002 /* AlarmModel.swift */,
-				F00000032C4EF00000000003 /* WorkoutHistoryModel.swift */,
-				F00000042C4EF00000000004 /* AlarmManager.swift */,
-				F00000052C4EF00000000005 /* MotionVisionEngine.swift */,
-				F00000062C4EF00000000006 /* PullUpDetector.swift */,
-				F00000072C4EF00000000007 /* PushUpDetector.swift */,
-				F00000082C4EF00000000008 /* SoundEngine.swift */,
-				F00000092C4EF00000000009 /* AlarmEditView.swift */,
-				F00000102C4EF00000000010 /* CameraPreviewView.swift */,
-				F00000112C4EF00000000011 /* DashboardView.swift */,
-				F00000122C4EF00000000012 /* ExerciseVerificationView.swift */,
-				F00000132C4EF00000000013 /* PoseOverlayCanvas.swift */,
-				F00000142C4EF00000000014 /* StatsView.swift */,
+				F00000222C4EF00000000022 /* Version.xcconfig */,
+				F00000212C4EF00000000021 /* PulseWake.entitlements */,
+				F00000022C4EF00000000002 /* Models/AlarmModel.swift */,
+				F00000032C4EF00000000003 /* Models/WorkoutHistoryModel.swift */,
+				F00000042C4EF00000000004 /* Services/AlarmManager.swift */,
+				F00000192C4EF00000000019 /* Services/HealthKitManager.swift */,
+				F00000202C4EF00000000020 /* Services/WorkoutSensorHub.swift */,
+				F00000052C4EF00000000005 /* Services/MotionVisionEngine.swift */,
+				F00000062C4EF00000000006 /* Services/PullUpDetector.swift */,
+				F00000072C4EF00000000007 /* Services/PushUpDetector.swift */,
+				F00000082C4EF00000000008 /* Services/SoundEngine.swift */,
+				F00000092C4EF00000000009 /* Views/AlarmEditView.swift */,
+				F00000102C4EF00000000010 /* Views/CameraPreviewView.swift */,
+				F00000112C4EF00000000011 /* Views/DashboardView.swift */,
+				F00000122C4EF00000000012 /* Views/ExerciseVerificationView.swift */,
+				F00000132C4EF00000000013 /* Views/PoseOverlayCanvas.swift */,
+				F00000142C4EF00000000014 /* Views/StatsView.swift */,
+				F00000182C4EF00000000018 /* Views/RootView.swift */,
+				F00000232C4EF00000000023 /* Views/WorkoutCelebrationView.swift */,
 				F00000162C4EF00000000016 /* Assets.xcassets */,
 				F00000172C4EF00000000017 /* LaunchScreen.storyboard */,
+				G10000012C4EF00000000001 /* Alarm Sounds */,
 			);
-			path = NudgeAlarm;
+			path = PulseWake;
+			sourceTree = "<group>";
+		};
+		G10000012C4EF00000000001 /* Alarm Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				F10000012C4EF00000000001 /* Beep.mp3 */,
+				F10000022C4EF00000000002 /* Carjack.mp3 */,
+				F10000032C4EF00000000003 /* Chiptune.mp3 */,
+				F10000042C4EF00000000004 /* Clock Alarm.mp3 */,
+				F10000052C4EF00000000005 /* Digital Alarm.mp3 */,
+				F10000062C4EF00000000006 /* Mellow.mp3 */,
+				F10000072C4EF00000000007 /* Oversimplified.mp3 */,
+				F10000082C4EF00000000008 /* Star Dust.mp3 */,
+			);
+			path = "Alarm Sounds";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
-
-/* Begin PBXResourcesBuildPhase section */
-		RES000012C4EF00000000001 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A00000152C4EF00000000015 /* Assets.xcassets in Resources */,
-				A00000162C4EF00000000016 /* LaunchScreen.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		T00000012C4EF00000000001 /* PulseWake */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E00000012C4EF00000000001 /* Build configuration list for PBXNativeTarget "PulseWake" */;
 			buildPhases = (
-				R00000012C4EF00000000001 /* Auto Increment Build Version */,
 				S00000012C4EF00000000001 /* Sources */,
 				C00000012C4EF00000000001 /* Frameworks */,
 				RES000012C4EF00000000001 /* Resources */,
@@ -155,26 +189,24 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		R00000012C4EF00000000001 /* Auto Increment Build Version */ = {
-			isa = PBXShellScriptBuildPhase;
+/* Begin PBXResourcesBuildPhase section */
+		RES000012C4EF00000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Auto Increment Build Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
+				A00000172C4EF00000000018 /* Assets.xcassets in Resources */,
+				A10000012C4EF00000000001 /* Beep.mp3 in Resources */,
+				A10000022C4EF00000000002 /* Carjack.mp3 in Resources */,
+				A10000032C4EF00000000003 /* Chiptune.mp3 in Resources */,
+				A10000042C4EF00000000004 /* Clock Alarm.mp3 in Resources */,
+				A10000052C4EF00000000005 /* Digital Alarm.mp3 in Resources */,
+				A10000062C4EF00000000006 /* Mellow.mp3 in Resources */,
+				A10000072C4EF00000000007 /* Oversimplified.mp3 in Resources */,
+				A10000082C4EF00000000008 /* Star Dust.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "INFOPLIST_PATH=\"${PROJECT_DIR}/NudgeAlarm/Info.plist\"\nif [ -f \"$INFOPLIST_PATH\" ]; then\n    BUILD_NUMBER=$(date +%Y%m%d%H%M)\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUILD_NUMBER\" \"$INFOPLIST_PATH\" || true\n    echo \"Updated CFBundleVersion to $BUILD_NUMBER\"\nfi\n";
 		};
-/* End PBXShellScriptBuildPhase section */
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		S00000012C4EF00000000001 /* Sources */ = {
@@ -182,19 +214,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				A00000012C4EF00000000001 /* NudgeAlarmApp.swift in Sources */,
-				A00000022C4EF00000000002 /* AlarmModel.swift in Sources */,
-				A00000032C4EF00000000003 /* WorkoutHistoryModel.swift in Sources */,
-				A00000042C4EF00000000004 /* AlarmManager.swift in Sources */,
-				A00000052C4EF00000000005 /* MotionVisionEngine.swift in Sources */,
-				A00000062C4EF00000000006 /* PullUpDetector.swift in Sources */,
-				A00000072C4EF00000000007 /* PushUpDetector.swift in Sources */,
-				A00000082C4EF00000000008 /* SoundEngine.swift in Sources */,
-				A00000092C4EF00000000009 /* AlarmEditView.swift in Sources */,
-				A00000102C4EF00000000010 /* CameraPreviewView.swift in Sources */,
-				A00000112C4EF00000000011 /* DashboardView.swift in Sources */,
-				A00000122C4EF00000000012 /* ExerciseVerificationView.swift in Sources */,
-				A00000132C4EF00000000013 /* PoseOverlayCanvas.swift in Sources */,
-				A00000142C4EF00000000014 /* StatsView.swift in Sources */,
+				A00000022C4EF00000000002 /* Models/AlarmModel.swift in Sources */,
+				A00000032C4EF00000000003 /* Models/WorkoutHistoryModel.swift in Sources */,
+				A00000042C4EF00000000004 /* Services/AlarmManager.swift in Sources */,
+				A00000182C4EF00000000019 /* Services/HealthKitManager.swift in Sources */,
+				A00000192C4EF00000000020 /* Services/WorkoutSensorHub.swift in Sources */,
+				A00000052C4EF00000000005 /* Services/MotionVisionEngine.swift in Sources */,
+				A00000062C4EF00000000006 /* Services/PullUpDetector.swift in Sources */,
+				A00000072C4EF00000000007 /* Services/PushUpDetector.swift in Sources */,
+				A00000082C4EF00000000008 /* Services/SoundEngine.swift in Sources */,
+				A00000092C4EF00000000009 /* Views/AlarmEditView.swift in Sources */,
+				A00000102C4EF00000000010 /* Views/CameraPreviewView.swift in Sources */,
+				A00000112C4EF00000000011 /* Views/DashboardView.swift in Sources */,
+				A00000122C4EF00000000012 /* Views/ExerciseVerificationView.swift in Sources */,
+				A00000132C4EF00000000013 /* Views/PoseOverlayCanvas.swift in Sources */,
+				A00000142C4EF00000000014 /* Views/StatsView.swift in Sources */,
+				A00000152C4EF00000000015 /* Views/RootView.swift in Sources */,
+				A00000202C4EF00000000021 /* Views/WorkoutCelebrationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,55 +239,69 @@
 /* Begin XCBuildConfiguration section */
 		D00000012C4EF00000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F00000222C4EF00000000022 /* Version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = PulseWake/PulseWake.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 8QSZ45GDMV;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = NudgeAlarm/Info.plist;
+				INFOPLIST_FILE = PulseWake/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PulseWake;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.deepankarboro.pulsewake;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_TARGETS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		D00000022C4EF00000000002 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F00000222C4EF00000000022 /* Version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = PulseWake/PulseWake.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 8QSZ45GDMV;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = NudgeAlarm/Info.plist;
+				INFOPLIST_FILE = PulseWake/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PulseWake;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.deepankarboro.pulsewake;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_TARGETS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};

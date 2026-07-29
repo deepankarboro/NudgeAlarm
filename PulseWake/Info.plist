@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.apple.com/DTDs/PropertyList-1.0.apple.com">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
@@ -15,40 +15,38 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>PulseWake uses your camera and pose detection to verify that you complete your required Push-Ups or Pull-Ups before turning off the alarm.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>PulseWake reads your step count and workout data to show progress in Stats and verify wake-up activity.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>PulseWake saves completed alarm workouts and session steps to the Health app when you finish your reps.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>PulseWake uses the microphone during exercise verification to detect movement and exertion while you complete reps (audio is not recorded or stored).</string>
 	<key>NSMotionUsageDescription</key>
-	<string>PulseWake uses device motion sensors to ensure your phone is positioned correctly during exercise verification.</string>
+	<string>PulseWake uses motion, activity, and step sensors in the background while your alarm is ringing and during exercise verification to confirm you are awake and moving.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIColorName</key>
-		<string>black</string>
-		<key>UIImageName</key>
-		<string>AppIcon</string>
-		<key>UIImageRespectsSafeAreaInsets</key>
-		<true/>
-	</dict>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
 	</array>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
 		<integer>2</integer>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

@@ -18,6 +18,8 @@ public final class PullUpDetector {
     public var verticalDisplacementRatio: Double = 0.0
     
     private var targetReps: Int = 10
+    private var lastRepCompletedAt: Date = .distantPast
+    private let minSecondsBetweenReps: TimeInterval = 0.4
     
     public init(targetReps: Int = 10) {
         self.targetReps = targetReps
@@ -30,6 +32,7 @@ public final class PullUpDetector {
         self.formFeedback = "Stand/hang facing camera"
         self.isFormValid = false
         self.verticalDisplacementRatio = 0.0
+        self.lastRepCompletedAt = .distantPast
     }
     
     public func processPoseObservation(_ observation: VNHumanBodyPoseObservation) {
@@ -96,22 +99,31 @@ public final class PullUpDetector {
             }
             
         case .chinAboveBar:
-            if chinToWrist < -0.12 && elbowAngle > 100.0 {
+            if chinToWrist >= -0.10 && elbowAngle < 90.0 {
+                registerCompletedRep()
+            } else if chinToWrist < -0.14 && elbowAngle > 95.0 {
                 currentState = .lowering
                 formFeedback = "Lowering down..."
             } else {
                 formFeedback = "Chin above bar!"
             }
-            
+
         case .lowering:
-            if elbowAngle >= 140.0 {
-                currentRepCount += 1
-                currentState = .hanging
-                formFeedback = "Pull-Up Rep \(currentRepCount) counted! Excellent!"
+            if elbowAngle >= 135.0 {
+                registerCompletedRep()
             } else {
                 formFeedback = "Lower fully into dead hang"
             }
         }
+    }
+
+    private func registerCompletedRep() {
+        let now = Date()
+        guard now.timeIntervalSince(lastRepCompletedAt) >= minSecondsBetweenReps else { return }
+        lastRepCompletedAt = now
+        currentRepCount += 1
+        currentState = .hanging
+        formFeedback = "Pull-Up Rep \(currentRepCount) counted! Excellent!"
     }
     
     private func calculateAngle(p1: CGPoint, p2: CGPoint, p3: CGPoint) -> Double {

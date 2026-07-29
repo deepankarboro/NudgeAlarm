@@ -19,7 +19,7 @@ struct NudgeAlarmApp: App {
 
     var body: some Scene {
         WindowGroup {
-            DashboardView()
+            RootView()
                 .preferredColorScheme(.dark)
         }
         .modelContainer(sharedModelContainer)
