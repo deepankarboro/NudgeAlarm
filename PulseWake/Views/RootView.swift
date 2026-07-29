@@ -22,9 +22,9 @@ public struct RootView: View {
                         onComplete: {}
                     )
                     .interactiveDismissDisabled(true)
+                    .id(alarmManager.verificationPresentationToken)
                 }
             }
-            .id(alarmManager.verificationPresentationToken)
     }
 
     private var ringingVerificationPresented: Binding<Bool> {

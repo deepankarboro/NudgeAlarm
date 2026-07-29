@@ -7,7 +7,6 @@ public struct DashboardView: View {
     
     @State private var showingAddAlarmSheet = false
     @State private var alarmToEdit: AlarmModel?
-    @State private var activeVerificationTest: VerificationTestSession?
     @State private var showingStatsSheet = false
     
     private var nextActiveAlarm: AlarmModel? {
@@ -108,15 +107,7 @@ public struct DashboardView: View {
                     .scrollContentBackground(.hidden)
                     
                     // Instant Test Exercise Verification Button
-                    Button(action: {
-                        let alarm = nextActiveAlarm
-                        activeVerificationTest = VerificationTestSession(
-                            exerciseType: alarm?.exerciseType ?? .pushUp,
-                            targetReps: alarm?.targetReps ?? 5,
-                            label: alarm.map { "Test: \($0.label)" } ?? "Test Alarm Run",
-                            soundName: alarm?.soundName ?? "Beep"
-                        )
-                    }) {
+                    Button(action: startFullAlarmFlowTest) {
                         HStack(spacing: 10) {
                             Image(systemName: "play.circle.fill")
                                 .font(.title3)
@@ -174,25 +165,26 @@ public struct DashboardView: View {
             .sheet(isPresented: $showingStatsSheet) {
                 StatsView()
             }
-            .fullScreenCover(item: $activeVerificationTest) { test in
-                ExerciseVerificationView(
-                    exerciseType: test.exerciseType,
-                    targetReps: test.reps,
-                    alarmLabel: test.label,
-                    alarmSoundName: test.soundName,
-                    onComplete: {
-                        activeVerificationTest = nil
-                    }
-                )
-                .interactiveDismissDisabled(true)
-            }
         }
         .onAppear {
             AlarmManager.shared.requestPermissions()
             WorkoutSensorHub.shared.requestPermissions()
         }
     }
-    
+
+    private func startFullAlarmFlowTest() {
+        let alarm = nextActiveAlarm
+        let testAlarm = AlarmModel(
+            label: alarm.map { "Test: \($0.label)" } ?? "Test Alarm Run",
+            exerciseType: alarm?.exerciseType ?? .pushUp,
+            targetReps: alarm?.targetReps ?? 5,
+            isEnabled: true,
+            repeatDays: [],
+            soundName: alarm?.soundName ?? "Beep"
+        )
+        AlarmManager.shared.startRinging(alarm: testAlarm)
+    }
+
     private func deleteAlarms(at offsets: IndexSet) {
         for index in offsets {
             let alarm = alarms[index]
@@ -200,21 +192,6 @@ public struct DashboardView: View {
             modelContext.delete(alarm)
         }
         try? modelContext.save()
-    }
-}
-
-public struct VerificationTestSession: Identifiable {
-    public let id = UUID()
-    public let exerciseType: ExerciseType
-    public let reps: Int
-    public let label: String
-    public let soundName: String
-
-    public init(exerciseType: ExerciseType, targetReps: Int, label: String, soundName: String) {
-        self.exerciseType = exerciseType
-        self.reps = targetReps
-        self.label = label
-        self.soundName = soundName
     }
 }
 
