@@ -8,6 +8,7 @@
 .swiftpm/
 Build/
 DerivedData/
+.derivedData/
 *.xcworkspace/
 *.xcuserdata/
 xcuserdata/

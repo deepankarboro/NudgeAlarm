@@ -21,6 +21,16 @@ public struct ExerciseVerificationView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Bindable private var sensors = WorkoutSensorHub.shared
 
+    // Endpoint F: Detection-failure escape hatch state.
+    // After repeated Vision failures (~1 s of 30 fps) OR no skeleton detected for 20 s,
+    // surface a non-dismissible "Silence alarm" button so the user is never trapped
+    // if detection breaks (especially on a real wake-up).
+    @State private var consecutiveVisionFailures = 0
+    @State private var lastSkeletonSeenAt: Date = Date()
+    @State private var showEscapeHatch = false
+    private let visionFailureThreshold = 30
+    private let noSkeletonSeconds = 20.0
+
     public init(
         exerciseType: ExerciseType,
         targetReps: Int,
@@ -76,6 +86,41 @@ public struct ExerciseVerificationView: View {
                 .transition(.opacity.combined(with: .scale(scale: 1.02)))
                 .zIndex(10)
             }
+
+            // Endpoint F: Escape-hatch overlay. Drawn above everything except the celebration.
+            if showEscapeHatch && !hasCompleted && !showCelebration {
+                VStack(spacing: 14) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 44))
+                        .foregroundStyle(.linearGradient(colors: [.orange, .red], startPoint: .top, endPoint: .bottom))
+                    Text("Detection unavailable")
+                        .font(.title3.weight(.bold))
+                        .foregroundColor(.white)
+                    Text("PulseWake couldn't detect reps. Silence the alarm and make sure your body and the camera are well-positioned.")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 28)
+                    Button(action: silenceAlarmAndAbort) {
+                        Text("Silence Alarm")
+                            .font(.headline.weight(.semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(LinearGradient(colors: [.orange, .red], startPoint: .leading, endPoint: .trailing))
+                            .cornerRadius(14)
+                    }
+                    .padding(.horizontal, 36)
+                    .padding(.top, 4)
+                }
+                .padding(28)
+                .background(.regularMaterial)
+                .cornerRadius(24)
+                .padding(.horizontal, 24)
+                .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                .zIndex(9)
+                .animation(.spring(response: 0.4, dampingFraction: 0.85), value: showEscapeHatch)
+            }
         }
         .interactiveDismissDisabled(true)
         .onAppear(perform: beginVerificationSession)
@@ -93,6 +138,32 @@ public struct ExerciseVerificationView: View {
                 if newReps >= targetReps {
                     hasCompleted = true
                     completeExercise()
+                }
+            }
+        }
+        // Endpoint F watchdog: a frame with a non-empty skeleton resets the failure clock.
+        .onChange(of: engine.currentSkeleton.points.count) { _, count in
+            if count > 0 {
+                consecutiveVisionFailures = 0
+                lastSkeletonSeenAt = Date()
+                if showEscapeHatch {
+                    showEscapeHatch = false
+                }
+            }
+        }
+        // Endpoint F watchdog: a single shot timer that wakes every 2 s and checks the
+        // two failure conditions (vision errors / no skeleton). Cheaper than running a
+        // Timer.publish on the body itself.
+        .task {
+            while !hasCompleted && !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                guard !hasCompleted && !showCelebration else { return }
+
+                let elapsedSinceSkeleton = Date().timeIntervalSince(lastSkeletonSeenAt)
+                if elapsedSinceSkeleton >= noSkeletonSeconds || consecutiveVisionFailures >= visionFailureThreshold {
+                    if !showEscapeHatch {
+                        showEscapeHatch = true
+                    }
                 }
             }
         }
@@ -320,10 +391,13 @@ public struct ExerciseVerificationView: View {
     private func completeExercise() {
         let duration = Date().timeIntervalSince(startTime)
 
+        // Endpoint G: store the actual count of reps the detector counted (clamped to target).
+        // Previously this always stored `targetReps`, hiding overshoot bugs in the detectors.
+        let finalReps = min(max(currentReps, 0), targetReps)
         let log = WorkoutHistoryModel(
             alarmLabel: alarmLabel,
             exerciseType: exerciseType,
-            completedReps: targetReps,
+            completedReps: finalReps,
             durationSeconds: duration
         )
         modelContext.insert(log)
@@ -331,7 +405,7 @@ public struct ExerciseVerificationView: View {
 
         sensors.finishWorkout(
             exerciseType: exerciseType,
-            reps: targetReps,
+            reps: finalReps,
             durationSeconds: duration,
             startDate: startTime
         )
@@ -344,6 +418,32 @@ public struct ExerciseVerificationView: View {
         }
     }
 
+    /// Endpoint F: User-tap escape hatch. Silences the alarm and dismisses the cover so
+    /// the user is never trapped if detection fails. Logs a 0-rep `WorkoutHistoryModel`
+    /// so the user has a record they overslept/aborted. Does NOT count toward workout totals
+    /// in HealthKit (we skip `finishWorkout`).
+    private func silenceAlarmAndAbort() {
+        guard !hasCompleted, !showCelebration else { return }
+        hasCompleted = true
+        showEscapeHatch = false
+
+        let duration = Date().timeIntervalSince(startTime)
+        let log = WorkoutHistoryModel(
+            alarmLabel: alarmLabel,
+            exerciseType: exerciseType,
+            completedReps: 0,
+            durationSeconds: duration
+        )
+        modelContext.insert(log)
+        try? modelContext.save()
+
+        engine.stopEngine()
+        sensors.stopExerciseSession()
+
+        AlarmManager.shared.stopRingingAfterCelebration()
+        onComplete()
+    }
+
     private func finishAfterCelebration() {
         AlarmManager.shared.stopRingingAfterCelebration()
         onComplete()
@@ -352,11 +452,20 @@ public struct ExerciseVerificationView: View {
     private func beginVerificationSession() {
         hasCompleted = false
         showCelebration = false
+        showEscapeHatch = false
+        consecutiveVisionFailures = 0
         startTime = Date()
         lastSpokenRep = 0
+        lastSkeletonSeenAt = Date()
         #if canImport(UIKit)
         UIApplication.shared.isIdleTimerDisabled = true
         #endif
+        // Endpoint F: subscribe to Vision failures from the engine. The callback fires on the
+        // main thread (engine guarantees this). We increment a counter; when it exceeds the
+        // threshold the watchdog `.task` will surface the escape hatch.
+        engine.onVisionError = { _ in
+            consecutiveVisionFailures += 1
+        }
         AlarmManager.shared.configureAudioSessionForExerciseVerification()
         AlarmManager.shared.ensureVerificationAlarmActive(
             exerciseType: exerciseType,
@@ -373,6 +482,9 @@ public struct ExerciseVerificationView: View {
         #if canImport(UIKit)
         UIApplication.shared.isIdleTimerDisabled = false
         #endif
+        // Disconnect the Vision failure callback so we don't keep accumulating onto a
+        // released view's @State after dismissal.
+        engine.onVisionError = nil
         if !showCelebration {
             engine.stopEngine()
             sensors.stopExerciseSession()

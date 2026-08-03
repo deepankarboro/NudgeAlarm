@@ -46,7 +46,7 @@ public final class AlarmModel: Identifiable {
         targetReps: Int = 10,
         isEnabled: Bool = true,
         repeatDays: Set<Int> = [2, 3, 4, 5, 6], // Mon-Fri
-        soundName: String = "Radar Emergency",
+        soundName: String = "Beep",
         createdAt: Date = Date()
     ) {
         self.id = id

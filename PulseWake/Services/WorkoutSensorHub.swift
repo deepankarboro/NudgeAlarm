@@ -22,6 +22,11 @@ public final class WorkoutSensorHub {
     private var sessionStartDate: Date?
     private var audioEngine: AVAudioEngine?
     private var exertionTimer: Timer?
+    /// Tracks whether a tap is currently installed on `audioEngine?.inputNode`. Must only be
+    /// mutated on the main thread. Prevents `removeTap` from being called on an engine whose
+    /// tap was never installed (which throws EXC_BAD_ACCESS on iOS) and prevents double
+    /// `installTap` (which throws "tap already installed").
+    private var hasInstalledTap = false
 
     private init() {}
 
@@ -150,7 +155,12 @@ public final class WorkoutSensorHub {
         let format = input.inputFormat(forBus: 0)
         guard format.sampleRate > 0, format.channelCount > 0 else { return }
 
+        // Capture a weak ref so the tap callback never dereferences a hub we've torn down.
+        // The `audioEngine === engine && .isRunning` check defends against buffers arriving
+        // after stop() was called.
         input.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
+            guard let self else { return }
+            guard let activeEngine = self.audioEngine, activeEngine === engine, activeEngine.isRunning else { return }
             guard let channelData = buffer.floatChannelData?[0] else { return }
             let frameCount = Int(buffer.frameLength)
             var sum: Float = 0
@@ -161,21 +171,45 @@ public final class WorkoutSensorHub {
             let rms = sqrt(sum / Float(max(frameCount, 1)))
             let normalized = min(max(rms * 12, 0), 1)
             DispatchQueue.main.async {
-                self?.exertionLevel = normalized
+                self.exertionLevel = normalized
             }
         }
 
         do {
             try engine.start()
             audioEngine = engine
+            hasInstalledTap = true
         } catch {
+            // Engine did not start: roll back the tap installation so stopMicrophoneExertionMonitor
+            // does not call removeTap on an engine that was never run (which would crash).
+            // The guard `engine.isRunning` is belt-and-suspenders.
+            if engine.isRunning {
+                input.removeTap(onBus: 0)
+            }
+            hasInstalledTap = false
+            audioEngine = nil
             print("Microphone exertion monitor failed: \(error)")
         }
     }
 
     private func stopMicrophoneExertionMonitor() {
-        guard let engine = audioEngine else { return }
-        engine.inputNode.removeTap(onBus: 0)
+        // Capture synchronously; never reach into a nil audioEngine.
+        guard let engine = audioEngine else {
+            hasInstalledTap = false
+            exertionLevel = 0
+            exertionTimer?.invalidate()
+            exertionTimer = nil
+            return
+        }
+
+        // Only remove the tap if we actually installed one AND the engine is currently running.
+        // Calling removeTap on a stopped engine, or one whose tap was never installed, throws
+        // EXC_BAD_ACCESS on iOS 17+.
+        if hasInstalledTap, engine.isRunning {
+            engine.inputNode.removeTap(onBus: 0)
+        }
+        hasInstalledTap = false
+
         if engine.isRunning {
             engine.stop()
         }

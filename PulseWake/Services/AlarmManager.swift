@@ -119,14 +119,25 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
     }
     
     // MARK: - Alarm Ringing & Audio Session
+    /// Atomically mutates observable presentation state on the caller's thread BEFORE any async
+    /// side-effects start, so RootView's `fullScreenCover` never observes `isRinging == true`
+    /// with `activeRingingAlarm == nil` (which would render an empty cover body and crash).
+    /// All three presentation properties land in the same main-thread run-loop tick.
     public func startRinging(alarm: AlarmModel) {
-        DispatchQueue.main.async {
+        let isMain = Thread.isMainThread
+        let apply: () -> Void = { [weak self] in
+            guard let self else { return }
             self.activeRingingAlarm = alarm
             self.isRinging = true
             self.verificationPresentationToken = UUID()
             self.playLoudAlarmSound(alarm: alarm)
             self.speakInstruction("Wake up! Complete \(alarm.targetReps) \(alarm.exerciseType.rawValue) to turn off alarm!")
             WorkoutSensorHub.shared.startWakeSession()
+        }
+        if isMain {
+            apply()
+        } else {
+            DispatchQueue.main.async(execute: apply)
         }
     }
 
@@ -207,8 +218,18 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
     
     private func playLoudAlarmSound(alarm: AlarmModel) {
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.duckOthers])
-            try AVAudioSession.sharedInstance().setActive(true)
+            // Endpoint E / C: do NOT unconditionally flip the audio session category to
+            // `.playback`. When the exercise verification flow has already configured
+            // `.playAndRecord` (for the microphone exertion monitor in WorkoutSensorHub),
+            // flipping back to `.playback` invalidates the mic tap's underlying format and
+            // breaks AVAudioEngine.start(). Keep whatever category is currently active.
+            let session = AVAudioSession.sharedInstance()
+            let currentCategory = session.category
+            if currentCategory != .playAndRecord {
+                // Fresh alarm ring (no verification yet): use .playback for maximum loudness.
+                try session.setCategory(.playback, mode: .default, options: [.duckOthers])
+            }
+            try session.setActive(true)
 
             let soundName = alarm.soundName
             guard let soundURL = Bundle.main.url(forResource: soundName, withExtension: "mp3") else {
@@ -246,13 +267,19 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
     }
     
     // MARK: - UNUserNotificationCenterDelegate
-    private func intFromUserInfo(_ userInfo: [AnyHashable: Any], key: String) -> Int? {
+    /// Internal-only test seam. Public so the test bundle can verify int/NSNumber tolerance
+    /// and the `userInfo` schema round-trip. Not part of the app's public API contract.
+    internal func intFromUserInfo(_ userInfo: [AnyHashable: Any], key: String) -> Int? {
         if let value = userInfo[key] as? Int { return value }
         if let number = userInfo[key] as? NSNumber { return number.intValue }
         return nil
     }
 
-    private func alarmFromNotificationContent(_ content: UNNotificationContent) -> AlarmModel? {
+    /// Internal-only test seam. Reconstructs an `AlarmModel` from a notification payload
+    /// WITHOUT inserting into SwiftData. Returns nil if any required key is missing or
+    /// malformed. The returned alarm is purely ephemeral and MUST NOT be passed to
+    /// `modelContext.insert` - it is only used to drive the in-memory ringing state.
+    internal func alarmFromNotificationContent(_ content: UNNotificationContent) -> AlarmModel? {
         let userInfo = content.userInfo
         guard let alarmIdString = userInfo["alarmId"] as? String,
               let uuid = UUID(uuidString: alarmIdString),

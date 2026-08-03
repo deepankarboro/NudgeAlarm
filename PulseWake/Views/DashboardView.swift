@@ -89,7 +89,11 @@ public struct DashboardView: View {
                                 .padding(.vertical, 24)
                                 .listRowBackground(Color.clear)
                             } else {
-                                ForEach(alarms) { alarm in
+                                // Endpoint D: snapshot the live `@Query` array so a
+                                // notification-driven SwiftData invalidation mid-render
+                                // cannot mutate the iteration source and trigger an
+                                // out-of-bounds access while we're rendering rows.
+                                ForEach(Array(alarms)) { alarm in
                                     AlarmRowView(alarm: alarm) {
                                         alarmToEdit = alarm
                                     } toggleAction: {

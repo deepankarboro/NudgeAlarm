@@ -34,6 +34,9 @@
 		A10000062C4EF00000000006 /* Mellow.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000062C4EF00000000006 /* Mellow.mp3 */; };
 		A10000072C4EF00000000007 /* Oversimplified.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000072C4EF00000000007 /* Oversimplified.mp3 */; };
 		A10000082C4EF00000000008 /* Star Dust.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F10000082C4EF00000000008 /* Star Dust.mp3 */; };
+		/* Tests target build files (Step 0) */
+		AT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift */; };
+		AT00000022C4EF00000000002 /* PullUpDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT00000022C4EF00000000002 /* PullUpDetectorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,10 +72,21 @@
 		F10000062C4EF00000000006 /* Mellow.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Mellow.mp3; sourceTree = "<group>"; };
 		F10000072C4EF00000000007 /* Oversimplified.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Oversimplified.mp3; sourceTree = "<group>"; };
 		F10000082C4EF00000000008 /* Star Dust.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Star Dust.mp3"; sourceTree = "<group>"; };
+		/* Tests target file refs + product (Step 0) */
+		FT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmManagerParsingTests.swift; sourceTree = "<group>"; };
+		FT00000022C4EF00000000002 /* PullUpDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpDetectorTests.swift; sourceTree = "<group>"; };
+		BT00000012C4EF00000000001 /* PulseWakeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PulseWakeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C00000012C4EF00000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CT00000012C4EF00000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -86,7 +100,9 @@
 			isa = PBXGroup;
 			children = (
 				G00000022C4EF00000000002 /* PulseWake */,
+				G20000012C4EF00000000001 /* PulseWakeTests */,
 				B00000012C4EF00000000001 /* PulseWake.app */,
+				BT00000012C4EF00000000001 /* PulseWakeTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -119,6 +135,15 @@
 				G10000012C4EF00000000001 /* Alarm Sounds */,
 			);
 			path = PulseWake;
+			sourceTree = "<group>";
+		};
+		G20000012C4EF00000000001 /* PulseWakeTests */ = {
+			isa = PBXGroup;
+			children = (
+				FT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift */,
+				FT00000022C4EF00000000002 /* PullUpDetectorTests.swift */,
+			);
+			path = PulseWakeTests;
 			sourceTree = "<group>";
 		};
 		G10000012C4EF00000000001 /* Alarm Sounds */ = {
@@ -156,6 +181,23 @@
 			productReference = B00000012C4EF00000000001 /* PulseWake.app */;
 			productType = "com.apple.product-type.application";
 		};
+		TT00000012C4EF00000000001 /* PulseWakeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ET00000012C4EF00000000001 /* Build configuration list for PBXNativeTarget "PulseWakeTests" */;
+			buildPhases = (
+				ST00000012C4EF00000000001 /* Sources */,
+				CT00000012C4EF00000000001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				PY00000012C4EF00000000001 /* PBXTargetDependency */,
+			);
+			name = PulseWakeTests;
+			productName = PulseWakeTests;
+			productReference = BT00000012C4EF00000000001 /* PulseWakeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -168,6 +210,10 @@
 				TargetAttributes = {
 					T00000012C4EF00000000001 = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					TT00000012C4EF00000000001 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = T00000012C4EF00000000001;
 					};
 				};
 			};
@@ -185,6 +231,7 @@
 			projectRoot = "";
 			targets = (
 				T00000012C4EF00000000001 /* PulseWake */,
+				TT00000012C4EF00000000001 /* PulseWakeTests */,
 			);
 		};
 /* End PBXProject section */
@@ -234,7 +281,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ST00000012C4EF00000000001 /* Sources for PulseWakeTests */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift in Sources */,
+				AT00000022C4EF00000000002 /* PullUpDetectorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		PT00000012C4EF00000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = P00000012C4EF00000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = T00000012C4EF00000000001;
+			remoteInfo = PulseWake;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		PY00000012C4EF00000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = T00000012C4EF00000000001 /* PulseWake */;
+			targetProxy = PT00000012C4EF00000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D00000012C4EF00000000001 /* Debug */ = {
@@ -323,6 +397,60 @@
 			};
 			name = Release;
 		};
+		DT00000012C4EF00000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				DEVELOPMENT_TEAM = 8QSZ45GDMV;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.3;
+				CURRENT_PROJECT_VERSION = 4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepankarboro.pulsewake.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PulseWake.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PulseWake";
+			};
+			name = Debug;
+		};
+		DT00000022C4EF00000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				DEVELOPMENT_TEAM = 8QSZ45GDMV;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.3;
+				CURRENT_PROJECT_VERSION = 4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deepankarboro.pulsewake.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PulseWake.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PulseWake";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -340,6 +468,15 @@
 			buildConfigurations = (
 				D00000032C4EF00000000003 /* Debug */,
 				D00000042C4EF00000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ET00000012C4EF00000000001 /* Build configuration list for PBXNativeTarget "PulseWakeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DT00000012C4EF00000000001 /* Debug */,
+				DT00000022C4EF00000000002 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
