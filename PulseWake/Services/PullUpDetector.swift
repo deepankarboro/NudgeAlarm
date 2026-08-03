@@ -195,6 +195,14 @@ public final class PullUpDetector {
             // firing both branches.
             if !repCountedThisCycle, elbowAngle >= 135.0 {
                 registerCompletedRep()
+            } else if elbowAngle >= 135.0 {
+                // The per-cycle flag blocked a duplicate count for this cycle, but the user
+                // has fully extended back to dead hang we MUST return to .hanging so the next
+                // rep cycle can start. Without this transition the state would stick in
+                // .lowering forever (the original chinAboveBar register already counted the
+                // rep for this cycle).
+                currentState = .hanging
+                formFeedback = "Lowered to dead hang"
             } else {
                 formFeedback = "Lower fully into dead hang"
             }

@@ -322,6 +322,7 @@
 				CODE_SIGN_ENTITLEMENTS = PulseWake/PulseWake.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8QSZ45GDMV;
+				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PulseWake/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PulseWake;
