@@ -159,3 +159,79 @@ xcodebuild -project PulseWake.xcodeproj -scheme PulseWake -destination "platform
 4. Apply for Critical Alerts entitlement
 5. Generate proper app icons
 6. Test App Store build flow
+---
+---
+
+## Session Summary
+**Date**: August 6, 2026
+**Session Type**: Crash investigation, rep-detection fixes, alarm hardening (AlarmKit)
+
+---
+
+### Starting point
+
+Reported symptom: the app crashed whenever the alarm flow was tested on device.
+
+**The crash was never reproduced.** The build succeeded, and the full alarm → verification flow
+ran cleanly in the simulator (driven via `simctl push`, no tapping needed). No crash logs existed
+on the Mac and the iPhone was offline. The crash then stopped occurring on the user's side after
+a clean reinstall, so it was never root-caused. The leading unproven hypothesis had been a data
+race in `MotionVisionEngine`; that race was real and has since been fixed regardless.
+
+A separate TestFlight "Unable to Install" was resolved by the user independently.
+
+---
+
+### Fixed
+
+**Push-up over-counting.** Every rep gate was an `OR` of body-drop and elbow-angle, so noise on
+either alone completed a cycle *and* passed the depth check. With the phone on the floor the arms
+point at the lens, so the projected elbow angle is foreshortened and unreliable — that produced
+phantom reps. Each placement now gates on the signal its camera geometry makes trustworthy.
+Cooldown 0.45 s → 0.8 s. Added `PushUpDetectorTests` (7 tests).
+
+**Pull-up detector stuck in `.lowering`.** `registerCompletedRep()` early-returns on its cooldown
+*without changing state*, and the `.lowering` branch delegated its transition to that call — so a
+declined rep parked the machine permanently and all later reps silently stopped counting. Full
+lockout now always returns to `.hanging`. A locked-out arm is 160°, not 135° (user's call: a dead
+hang is 160–180°; 135° is visibly bent).
+
+**Alarm toggle froze the app.** `AlarmRowView` wrote `isEnabled` twice per tap — once via the
+Toggle binding, once in `toggleAction` — and `.onChange` fed the second write back in, spinning
+forever. The side effect now lives in the binding's setter.
+
+**Alarm was trivially silenceable.** Volume buttons stopped it, as did closing the app. Root
+cause was a platform limit rather than a bug: the sound heard was the *notification's*, capped at
+30 s and silenceable by design, because the app was not yet running. Moved to **AlarmKit**
+(iOS 26.1+) with the notification path kept as fallback. See ARCHITECTURE.md for the rationale.
+
+**Also**: removed text-to-speech (both `AVSpeechSynthesizer`s); per-frame
+`VNDetectHumanBodyPoseRequest` instead of one shared across threads; permission prompts
+sequenced; HealthKit background delivery dropped (needs an entitlement the app lacks); `armv7`
+capability removed; stray `payload.json` deleted.
+
+---
+
+### Current state
+
+Push-ups now **under**-count — 4 real reps registered 1. The over-counting fix over-corrected.
+A temporary on-screen telemetry HUD and a per-alarm routing badge were added to tell the possible
+causes apart without guessing at thresholds.
+
+**Both are test-build aids and must be reviewed before release.**
+
+---
+
+### Process notes
+
+- Builds and archives are run by the user in Xcode; do not invoke `xcodebuild`
+- Testing is via TestFlight — Developer Mode is not enabled on the iPhone, so changes must be
+  committed and archived rather than run directly
+- `main` is the only branch; the `cursor/…` branch was merged and deleted
+
+---
+
+### Next Steps
+
+See **HANDOFF.md** — it holds the live resume point, the alarm-first test sequence, and a table
+for interpreting the telemetry HUD.
