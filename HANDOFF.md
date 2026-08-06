@@ -2,14 +2,39 @@
 
 **Last updated:** 6 August 2026
 **Branch:** `main` (only branch — the old `cursor/…` branch was merged and deleted)
-**Latest commit:** `6bc9515` — Add temporary push-up rep-detection telemetry
+**Latest commit:** `dc06cc2` — Per-alarm badge showing which mechanism scheduled it
 **Build state:** compiles and archives cleanly. Last archive: 1.0.5 (6).
 **Testing:** via TestFlight. Developer Mode is **not** enabled on the iPhone, so changes must be
 committed and archived — they cannot be run straight from Xcode.
 
 ---
 
-## Pick up here
+## Test order
+
+Deepankar's sequence: get the **alarm** trustworthy first, then tune rep counting. The alarm is
+the product; counting is a detail on top of it.
+
+**Set the target to 1 rep while testing the alarm itself** — the alarm is deliberately
+unsilenceable and rep counting currently under-counts, so a 5-rep target risks getting stuck with
+a sounding alarm.
+
+1. **Did AlarmKit take the alarm?** The dashboard badge now answers this directly: green
+   *System alarm* = AlarmKit, orange *Notification* = silent fallback, grey = not scheduled. If
+   it reads Notification, AlarmKit authorization or scheduling failed and nothing below is
+   meaningful. (Independent check: Settings → PulseWake should list an **Alarms** toggle.)
+2. **Does the alert appear when it fires?** AlarmKit's presentation is full-screen, titled
+   `PULSEWAKE — <label>`, with a single `Do N Push-Ups` button and **no Stop button**. The
+   notification fallback is a banner titled `⚡️ PULSEWAKE: <label>` with a *Start exercise now*
+   action. If the badge says System alarm but no full-screen alert appears, that points at the
+   missing Widget Extension target.
+3. **Volume buttons** — does it keep sounding?
+4. **Force-quit the app** — does it keep sounding?
+
+Only once those pass is the rep-counting work below worth doing.
+
+---
+
+## Then: rep counting
 
 **Push-ups under-count: 4 real reps registered 1.** This is the one live issue.
 
