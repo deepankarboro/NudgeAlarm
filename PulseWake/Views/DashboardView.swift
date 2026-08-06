@@ -175,6 +175,7 @@ public struct DashboardView: View {
             }
         }
         .onAppear {
+            AlarmManager.shared.refreshAlarmRoutes()
             guard !hasRequestedPermissions else { return }
             hasRequestedPermissions = true
             requestPermissionsInSequence()
@@ -248,6 +249,24 @@ public struct AlarmRowView: View {
                     Text(alarm.repeatDaysSummary)
                         .font(.caption)
                         .foregroundColor(.gray)
+                }
+
+                // Which mechanism actually holds this alarm. AlarmKit falls back to a local
+                // notification silently, and the difference only used to show up when the alarm
+                // fired — by which point it's too late to tell what you were testing.
+                if alarm.isEnabled {
+                    let route = AlarmManager.shared.alarmRoutes[alarm.id]
+                    HStack(spacing: 4) {
+                        Image(systemName: route == .systemAlarm ? "checkmark.shield.fill" : "bell.badge")
+                            .font(.caption2)
+                        Text(route?.rawValue ?? "Not scheduled")
+                            .font(.caption2.weight(.semibold))
+                    }
+                    .foregroundColor(route == .systemAlarm ? .green : (route == nil ? .gray : .orange))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background((route == .systemAlarm ? Color.green : (route == nil ? Color.gray : Color.orange)).opacity(0.15))
+                    .clipShape(Capsule())
                 }
             }
             

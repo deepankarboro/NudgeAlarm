@@ -13,6 +13,16 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
     /// Bumped when an alarm fires so SwiftUI always re-presents verification UI.
     public var verificationPresentationToken: UUID = UUID()
     
+    /// Which mechanism actually took a given alarm. The two paths look different when they fire,
+    /// but nothing on the dashboard said which one an alarm was on, so a silent fallback to
+    /// notifications was invisible until the alarm went off.
+    public enum AlarmRoute: String {
+        case systemAlarm = "System alarm"
+        case notification = "Notification"
+    }
+
+    public internal(set) var alarmRoutes: [UUID: AlarmRoute] = [:]
+
     private var audioPlayer: AVAudioPlayer?
 
     // Available alarm sounds (must match files in bundle)
@@ -73,13 +83,45 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
         #if canImport(AlarmKit)
         if #available(iOS 26.1, *) {
             Task { @MainActor in
-                if await PulseWakeAlarmKitScheduler.schedule(alarm) { return }
+                if await PulseWakeAlarmKitScheduler.schedule(alarm) {
+                    self.alarmRoutes[alarm.id] = .systemAlarm
+                    return
+                }
                 self.scheduleNotificationAlarm(alarm)
+                self.alarmRoutes[alarm.id] = .notification
             }
             return
         }
         #endif
         scheduleNotificationAlarm(alarm)
+        alarmRoutes[alarm.id] = .notification
+    }
+
+    /// Rebuilds `alarmRoutes` from what the system actually holds, so the dashboard reflects
+    /// reality on launch rather than only after an alarm has been re-scheduled this session.
+    public func refreshAlarmRoutes() {
+        var routes: [UUID: AlarmRoute] = [:]
+        #if canImport(AlarmKit)
+        if #available(iOS 26.1, *) {
+            for id in PulseWakeAlarmKitScheduler.scheduledAlarmIDs() {
+                routes[id] = .systemAlarm
+            }
+        }
+        #endif
+
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            var merged = routes
+            for request in requests {
+                // Repeat-day alarms are stored as "<uuid>_<weekday>".
+                let base = request.identifier.split(separator: "_").first.map(String.init)
+                    ?? request.identifier
+                guard let id = UUID(uuidString: base), merged[id] == nil else { continue }
+                merged[id] = .notification
+            }
+            DispatchQueue.main.async {
+                self.alarmRoutes = merged
+            }
+        }
     }
 
     /// Legacy path for iOS below 26.1. Kept intact as the fallback.
@@ -126,6 +168,7 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
     }
     
     public func cancelAlarm(_ alarm: AlarmModel) {
+        alarmRoutes[alarm.id] = nil
         #if canImport(AlarmKit)
         if #available(iOS 26.1, *) {
             PulseWakeAlarmKitScheduler.cancel(alarm)

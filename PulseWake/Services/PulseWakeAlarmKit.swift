@@ -176,6 +176,12 @@ public enum PulseWakeAlarmKitScheduler {
         }
     }
 
+    /// IDs AlarmKit currently holds. Used to show, per alarm, whether it really landed as a
+    /// system alarm or quietly fell back to a notification.
+    public static func scheduledAlarmIDs() -> [UUID] {
+        (try? AlarmKit.AlarmManager.shared.alarms)?.map(\.id) ?? []
+    }
+
     public static func cancel(_ alarm: AlarmModel) {
         do {
             try AlarmKit.AlarmManager.shared.cancel(id: alarm.id)
