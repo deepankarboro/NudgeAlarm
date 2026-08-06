@@ -26,6 +26,28 @@ public final class PushUpDetector {
     public var bodyDropRatio: Double = 0.0
     public var placement: PushUpPhonePlacement = .inFrontOfFace
 
+    // MARK: - Diagnostics
+    // Temporary instrumentation for tuning rep detection on-device. Rep counting can fail in
+    // three different ways that look identical from the outside — the depth gate rejecting the
+    // rep, the cooldown rejecting it, or the state machine never completing a cycle at all —
+    // so these surface which one actually happened. Remove once the thresholds are settled.
+
+    /// Full top→bottom→top cycles the state machine has completed, counted or not. If this
+    /// tracks the reps performed but `currentRepCount` lags, the motion is being seen and a gate
+    /// is rejecting it. If it lags too, the state machine isn't cycling.
+    public var detectedCycles: Int = 0
+    /// Peak depth of the most recent cycle as a fraction of what the gate demands. 1.0 = passes.
+    public var lastAttemptDepthRatio: Double = 0.0
+    /// Why the most recent cycle didn't count, or nil if it did.
+    public var lastRejectionReason: String?
+    /// Live top-of-rep baseline, to make drift visible.
+    public var debugBaselineY: Double = 0.0
+    /// Live unclipped body drop. `bodyDropRatio` saturates at 1.0, so it can't show how far
+    /// past — or short of — the threshold the motion actually reaches.
+    public var debugLiveDrop: Double = 0.0
+    /// The depth the gate currently demands, so the HUD doesn't hardcode it.
+    public var debugRequiredDrop: Double { frontMinBodyDropForRep }
+
     private var targetReps: Int = 10
     private var lastRepCompletedAt: Date = .distantPast
     /// A genuine push-up cycle takes about a second. The old 0.45 s window was short enough
@@ -72,6 +94,10 @@ public final class PushUpDetector {
         self.topBodyBaselineY = nil
         self.placementFrontScore = 1.0
         self.lastRepCompletedAt = .distantPast
+        self.detectedCycles = 0
+        self.lastAttemptDepthRatio = 0.0
+        self.lastRejectionReason = nil
+        self.debugBaselineY = 0.0
     }
 
     /// Plain-value view of a single Vision frame. `processPoseObservation` converts the
@@ -169,7 +195,9 @@ public final class PushUpDetector {
         }
 
         updateTopBaseline(bodyY: smoothedBodyY, elbowAngle: smoothedElbowAngle)
+        debugBaselineY = topBodyBaselineY ?? 0
         let bodyDrop = bodyDropFromTop(bodyY: smoothedBodyY)
+        debugLiveDrop = bodyDrop
         maxBodyDropInCurrentRep = max(maxBodyDropInCurrentRep, bodyDrop)
         bodyDropRatio = min(1.0, bodyDrop / frontMinBodyDropForRep)
 
@@ -354,9 +382,21 @@ public final class PushUpDetector {
 
     private func registerCompletedRep() {
         let now = Date()
-        guard now.timeIntervalSince(lastRepCompletedAt) >= minSecondsBetweenReps else {
+
+        // Diagnostics: record the attempt before any gate can reset the accumulators.
+        detectedCycles += 1
+        let elapsed = now.timeIntervalSince(lastRepCompletedAt)
+        switch placement {
+        case .inFrontOfFace:
+            lastAttemptDepthRatio = maxBodyDropInCurrentRep / frontMinBodyDropForRep
+        case .sideProfile:
+            lastAttemptDepthRatio = minElbowAngleInCurrentRep <= sideMinDepthAngleForRep ? 1.0 : 0.0
+        }
+
+        guard elapsed >= minSecondsBetweenReps else {
             // Too soon to be a real rep. Reset to the top so the cycle can restart cleanly
             // rather than leaving the machine parked in .pushingUp.
+            lastRejectionReason = String(format: "too soon (%.2fs)", elapsed)
             currentState = .top
             minElbowAngleInCurrentRep = 180.0
             maxBodyDropInCurrentRep = 0.0
@@ -373,6 +413,7 @@ public final class PushUpDetector {
         }
 
         guard depthOK else {
+            lastRejectionReason = String(format: "too shallow (%.0f%%)", lastAttemptDepthRatio * 100)
             currentState = .top
             formFeedback = placement == .inFrontOfFace
                 ? "Rep too shallow — lower your chest more"
@@ -382,6 +423,7 @@ public final class PushUpDetector {
             return
         }
 
+        lastRejectionReason = nil
         lastRepCompletedAt = now
         currentRepCount += 1
         currentState = .top

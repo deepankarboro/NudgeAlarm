@@ -320,6 +320,31 @@ public struct ExerciseVerificationView: View {
                     .cornerRadius(20)
                     .padding(.horizontal, 24)
 
+                    // Temporary rep-detection telemetry. `cycles` counts full down-up motions
+                    // the state machine saw; if that matches the reps performed while the count
+                    // lags, a gate is rejecting them and `last` says which. Remove once tuned.
+                    if exerciseType == .pushUp {
+                        VStack(spacing: 2) {
+                            Text("cycles \(engine.pushUpDetector.detectedCycles)  ·  counted \(engine.pushUpDetector.currentRepCount)  ·  peak \(Int(engine.pushUpDetector.lastAttemptDepthRatio * 100))%")
+                                .font(.caption2.monospaced())
+                                .foregroundColor(.yellow)
+                            Text(engine.pushUpDetector.lastRejectionReason.map { "last: \($0)" } ?? "last: counted")
+                                .font(.caption2.monospaced())
+                                .foregroundColor(engine.pushUpDetector.lastRejectionReason == nil ? .green : .orange)
+                            Text(String(format: "live drop %.4f  ·  need %.3f  ·  base %.3f",
+                                        engine.pushUpDetector.debugLiveDrop,
+                                        engine.pushUpDetector.debugRequiredDrop,
+                                        engine.pushUpDetector.debugBaselineY))
+                                .font(.caption2.monospaced())
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 6)
+                        .background(Color.black.opacity(0.55))
+                        .cornerRadius(10)
+                        .padding(.horizontal, 24)
+                    }
+
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Image(systemName: "figure.walk")
