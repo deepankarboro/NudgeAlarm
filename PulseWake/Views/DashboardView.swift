@@ -8,6 +8,7 @@ public struct DashboardView: View {
     @State private var showingAddAlarmSheet = false
     @State private var alarmToEdit: AlarmModel?
     @State private var showingStatsSheet = false
+    @State private var hasRequestedPermissions = false
     
     private var nextActiveAlarm: AlarmModel? {
         alarms.first(where: { $0.isEnabled })
@@ -97,7 +98,10 @@ public struct DashboardView: View {
                                     AlarmRowView(alarm: alarm) {
                                         alarmToEdit = alarm
                                     } toggleAction: {
-                                        alarm.isEnabled.toggle()
+                                        // Do NOT flip `isEnabled` here — the Toggle's binding has
+                                        // already applied the user's change. Flipping it again used
+                                        // to fight the binding and spin forever. `scheduleAlarm`
+                                        // reads the new value and cancels or schedules accordingly.
                                         AlarmManager.shared.scheduleAlarm(alarm)
                                         try? modelContext.save()
                                     }
@@ -171,8 +175,24 @@ public struct DashboardView: View {
             }
         }
         .onAppear {
-            AlarmManager.shared.requestPermissions()
-            WorkoutSensorHub.shared.requestPermissions()
+            guard !hasRequestedPermissions else { return }
+            hasRequestedPermissions = true
+            requestPermissionsInSequence()
+        }
+    }
+
+    /// Chains the four permission requests so each dialog waits for the previous answer.
+    /// Firing them together stacked notifications, HealthKit, microphone, and AlarmKit on top
+    /// of one another, and the user could not read what they were agreeing to.
+    private func requestPermissionsInSequence() {
+        AlarmManager.shared.requestPermissions { _ in
+            WorkoutSensorHub.shared.requestPermissions {
+                #if canImport(AlarmKit)
+                if #available(iOS 26.1, *) {
+                    Task { await PulseWakeAlarmKitScheduler.requestAuthorization() }
+                }
+                #endif
+            }
         }
     }
 
@@ -233,12 +253,20 @@ public struct AlarmRowView: View {
             
             Spacer()
             
-            Toggle("", isOn: $alarm.isEnabled)
-                .labelsHidden()
-                .tint(.cyan)
-                .onChange(of: alarm.isEnabled) { _, _ in
+            // The side effect runs in the binding's setter rather than via `.onChange`, so the
+            // model is written exactly once per tap and there is no change-notification path
+            // back into this view. An `.onChange` here would also re-fire for changes made
+            // anywhere else (SwiftData refresh, edit sheet), re-scheduling the alarm needlessly.
+            Toggle("", isOn: Binding(
+                get: { alarm.isEnabled },
+                set: { newValue in
+                    guard newValue != alarm.isEnabled else { return }
+                    alarm.isEnabled = newValue
                     toggleAction()
                 }
+            ))
+            .labelsHidden()
+            .tint(.cyan)
         }
         .padding(.vertical, 8)
         .contentShape(Rectangle())

@@ -204,7 +204,11 @@ final class PullUpDetectorTests: XCTestCase {
         detector.processFrame(frame(chinAboveWrist: -0.40, elbowAngle: 180))
         XCTAssertEqual(detector.currentState, .hanging, "Full lockout returns to hanging and clears the guard")
 
-        // CYCLE 2: a brand new pull should now count.
+        // CYCLE 2: a brand new pull should now count. Clear the 0.4 s anti-double-count
+        // cooldown first — the frames above are driven in microseconds, which no real pull-up
+        // can match, and without the wait the detector correctly rejects rep #2 as too soon.
+        Thread.sleep(forTimeInterval: 0.45)
+
         detector.processFrame(frame(chinAboveWrist: -0.25, elbowAngle: 110))
         XCTAssertEqual(detector.currentState, .pullingUp)
         detector.processFrame(frame(chinAboveWrist: -0.05, elbowAngle: 70))

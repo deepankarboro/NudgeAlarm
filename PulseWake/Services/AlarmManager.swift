@@ -14,8 +14,7 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
     public var verificationPresentationToken: UUID = UUID()
     
     private var audioPlayer: AVAudioPlayer?
-    private var speechSynthesizer = AVSpeechSynthesizer()
-    
+
     // Available alarm sounds (must match files in bundle)
     public static let availableSounds = [
         "Beep",
@@ -62,15 +61,32 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current().setNotificationCategories([category])
     }
     
+    /// Prefers a real system alarm (AlarmKit) and falls back to a local notification only when
+    /// AlarmKit is unavailable or declines. A notification alarm can be silenced with the volume
+    /// buttons and dies with the process; an AlarmKit alarm cannot, which is the whole point.
     public func scheduleAlarm(_ alarm: AlarmModel) {
         guard alarm.isEnabled else {
             cancelAlarm(alarm)
             return
         }
-        
+
+        #if canImport(AlarmKit)
+        if #available(iOS 26.1, *) {
+            Task { @MainActor in
+                if await PulseWakeAlarmKitScheduler.schedule(alarm) { return }
+                self.scheduleNotificationAlarm(alarm)
+            }
+            return
+        }
+        #endif
+        scheduleNotificationAlarm(alarm)
+    }
+
+    /// Legacy path for iOS below 26.1. Kept intact as the fallback.
+    private func scheduleNotificationAlarm(_ alarm: AlarmModel) {
         let center = UNUserNotificationCenter.current()
         cancelAlarm(alarm)
-        
+
         let content = UNMutableNotificationContent()
         content.title = "⚡️ PULSEWAKE: \(alarm.label)"
         content.body = "Tap to open camera — complete \(alarm.targetReps) \(alarm.exerciseType.rawValue) to turn off the alarm."
@@ -110,6 +126,12 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
     }
     
     public func cancelAlarm(_ alarm: AlarmModel) {
+        #if canImport(AlarmKit)
+        if #available(iOS 26.1, *) {
+            PulseWakeAlarmKitScheduler.cancel(alarm)
+        }
+        #endif
+
         let center = UNUserNotificationCenter.current()
         var identifiers = [alarm.id.uuidString]
         for day in 1...7 {
@@ -131,7 +153,6 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
             self.isRinging = true
             self.verificationPresentationToken = UUID()
             self.playLoudAlarmSound(alarm: alarm)
-            self.speakInstruction("Wake up! Complete \(alarm.targetReps) \(alarm.exerciseType.rawValue) to turn off alarm!")
             WorkoutSensorHub.shared.startWakeSession()
         }
         if isMain {
@@ -150,13 +171,19 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
         }
     }
 
-    /// Stops alarm audio without extra speech (used after celebration).
+    /// The single exit from a ringing alarm — reached only after the required reps are logged,
+    /// or via the detection-failure escape hatch. This is also the one place that stops the
+    /// AlarmKit alarm, so nothing else in the app can silence it.
     public func stopRingingAfterCelebration() {
         DispatchQueue.main.async {
+            #if canImport(AlarmKit)
+            if #available(iOS 26.1, *), let alarmID = self.activeRingingAlarm?.id {
+                PulseWakeAlarmKitScheduler.stopAlerting(id: alarmID)
+            }
+            #endif
             self.isRinging = false
             self.activeRingingAlarm = nil
             self.audioPlayer?.stop()
-            self.speechSynthesizer.stopSpeaking(at: .immediate)
             WorkoutSensorHub.shared.stopWakeSession()
         }
     }
@@ -213,7 +240,6 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
 
     public func silenceAlarmAudioForCelebration() {
         audioPlayer?.stop()
-        speechSynthesizer.stopSpeaking(at: .immediate)
     }
     
     private func playLoudAlarmSound(alarm: AlarmModel) {
@@ -259,14 +285,7 @@ public final class AlarmManager: NSObject, UNUserNotificationCenterDelegate {
         startRinging(alarm: alarm)
     }
     
-    public func speakInstruction(_ text: String) {
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.52
-        speechSynthesizer.speak(utterance)
-    }
-    
-    // MARK: - UNUserNotificationCenterDelegate
+// MARK: - UNUserNotificationCenterDelegate
     /// Internal-only test seam. Public so the test bundle can verify int/NSNumber tolerance
     /// and the `userInfo` schema round-trip. Not part of the app's public API contract.
     internal func intFromUserInfo(_ userInfo: [AnyHashable: Any], key: String) -> Int? {

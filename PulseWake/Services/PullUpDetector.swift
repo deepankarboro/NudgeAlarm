@@ -21,6 +21,11 @@ public final class PullUpDetector {
     private var lastRepCompletedAt: Date = .distantPast
     private let minSecondsBetweenReps: TimeInterval = 0.4
 
+    /// What counts as a locked-out arm — a true dead hang sits at 160-180°. The old 135°
+    /// threshold treated a visibly bent arm as full extension, so a half-finished rep could
+    /// close the cycle.
+    private let fullLockoutAngle: Double = 160.0
+
     /// Endpoint G: per-cycle guard that prevents a single pull-up rep from being counted
     /// twice in the same physical cycle. The `chinAboveBar` branch and the `lowering`
     /// branch could each call `registerCompletedRep` while the user is paused at the top;
@@ -162,7 +167,7 @@ public final class PullUpDetector {
             if repCountedThisCycle {
                 repCountedThisCycle = false
             }
-            if elbowAngle < 135.0 || shoulderY > (wristY - 0.25) {
+            if elbowAngle < fullLockoutAngle || shoulderY > (wristY - 0.25) {
                 currentState = .pullingUp
                 formFeedback = "Pulling up..."
             } else {
@@ -189,18 +194,19 @@ public final class PullUpDetector {
             }
 
         case .lowering:
-            // Only register a rep here if no rep has been counted in this cycle yet.
-            // This catches reps that finish via the lowering-to-dead-hang path rather than
-            // the chin-above-bar path; the per-cycle flag prevents the same rep from
-            // firing both branches.
-            if !repCountedThisCycle, elbowAngle >= 135.0 {
-                registerCompletedRep()
-            } else if elbowAngle >= 135.0 {
-                // The per-cycle flag blocked a duplicate count for this cycle, but the user
-                // has fully extended back to dead hang we MUST return to .hanging so the next
-                // rep cycle can start. Without this transition the state would stick in
-                // .lowering forever (the original chinAboveBar register already counted the
-                // rep for this cycle).
+            if elbowAngle >= fullLockoutAngle {
+                // Arms locked out — this rep cycle is over. Count it if the cycle hasn't
+                // counted one yet (the lowering-to-dead-hang path, as opposed to finishing
+                // via chin-above-bar), then ALWAYS return to .hanging.
+                //
+                // The unconditional transition is the fix for the stuck-detector bug:
+                // registerCompletedRep can decline the rep — either the per-cycle guard or
+                // the rep cooldown — and it returns without touching `currentState`. Leaving
+                // that to it parked the machine in .lowering permanently, so every later rep
+                // silently stopped counting.
+                if !repCountedThisCycle {
+                    registerCompletedRep()
+                }
                 currentState = .hanging
                 formFeedback = "Lowered to dead hang"
             } else {

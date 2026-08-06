@@ -15,6 +15,7 @@
 		A00000062C4EF00000000006 /* Services/PullUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000062C4EF00000000006 /* Services/PullUpDetector.swift */; };
 		A00000072C4EF00000000007 /* Services/PushUpDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000072C4EF00000000007 /* Services/PushUpDetector.swift */; };
 		A00000082C4EF00000000008 /* Services/SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000082C4EF00000000008 /* Services/SoundEngine.swift */; };
+		A00000992C4EF00000000099 /* Services/PulseWakeAlarmKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000992C4EF00000000099 /* Services/PulseWakeAlarmKit.swift */; };
 		A00000092C4EF00000000009 /* Views/AlarmEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000092C4EF00000000009 /* Views/AlarmEditView.swift */; };
 		A00000102C4EF00000000010 /* Views/CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000102C4EF00000000010 /* Views/CameraPreviewView.swift */; };
 		A00000112C4EF00000000011 /* Views/DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000112C4EF00000000011 /* Views/DashboardView.swift */; };
@@ -37,6 +38,7 @@
 		/* Tests target build files (Step 0) */
 		AT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift */; };
 		AT00000022C4EF00000000002 /* PullUpDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT00000022C4EF00000000002 /* PullUpDetectorTests.swift */; };
+		AT00000032C4EF00000000003 /* PushUpDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT00000032C4EF00000000003 /* PushUpDetectorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +51,7 @@
 		F00000062C4EF00000000006 /* Services/PullUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PullUpDetector.swift; sourceTree = "<group>"; };
 		F00000072C4EF00000000007 /* Services/PushUpDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PushUpDetector.swift; sourceTree = "<group>"; };
 		F00000082C4EF00000000008 /* Services/SoundEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SoundEngine.swift; sourceTree = "<group>"; };
+		F00000992C4EF00000000099 /* Services/PulseWakeAlarmKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PulseWakeAlarmKit.swift; sourceTree = "<group>"; };
 		F00000092C4EF00000000009 /* Views/AlarmEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AlarmEditView.swift; sourceTree = "<group>"; };
 		F00000102C4EF00000000010 /* Views/CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/CameraPreviewView.swift; sourceTree = "<group>"; };
 		F00000112C4EF00000000011 /* Views/DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/DashboardView.swift; sourceTree = "<group>"; };
@@ -75,6 +78,7 @@
 		/* Tests target file refs + product (Step 0) */
 		FT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmManagerParsingTests.swift; sourceTree = "<group>"; };
 		FT00000022C4EF00000000002 /* PullUpDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpDetectorTests.swift; sourceTree = "<group>"; };
+		FT00000032C4EF00000000003 /* PushUpDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushUpDetectorTests.swift; sourceTree = "<group>"; };
 		BT00000012C4EF00000000001 /* PulseWakeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PulseWakeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -122,6 +126,7 @@
 				F00000062C4EF00000000006 /* Services/PullUpDetector.swift */,
 				F00000072C4EF00000000007 /* Services/PushUpDetector.swift */,
 				F00000082C4EF00000000008 /* Services/SoundEngine.swift */,
+				F00000992C4EF00000000099 /* Services/PulseWakeAlarmKit.swift */,
 				F00000092C4EF00000000009 /* Views/AlarmEditView.swift */,
 				F00000102C4EF00000000010 /* Views/CameraPreviewView.swift */,
 				F00000112C4EF00000000011 /* Views/DashboardView.swift */,
@@ -142,6 +147,7 @@
 			children = (
 				FT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift */,
 				FT00000022C4EF00000000002 /* PullUpDetectorTests.swift */,
+				FT00000032C4EF00000000003 /* PushUpDetectorTests.swift */,
 			);
 			path = PulseWakeTests;
 			sourceTree = "<group>";
@@ -270,6 +276,7 @@
 				A00000062C4EF00000000006 /* Services/PullUpDetector.swift in Sources */,
 				A00000072C4EF00000000007 /* Services/PushUpDetector.swift in Sources */,
 				A00000082C4EF00000000008 /* Services/SoundEngine.swift in Sources */,
+				A00000992C4EF00000000099 /* Services/PulseWakeAlarmKit.swift in Sources */,
 				A00000092C4EF00000000009 /* Views/AlarmEditView.swift in Sources */,
 				A00000102C4EF00000000010 /* Views/CameraPreviewView.swift in Sources */,
 				A00000112C4EF00000000011 /* Views/DashboardView.swift in Sources */,
@@ -287,6 +294,7 @@
 			files = (
 				AT00000012C4EF00000000001 /* AlarmManagerParsingTests.swift in Sources */,
 				AT00000022C4EF00000000002 /* PullUpDetectorTests.swift in Sources */,
+				AT00000032C4EF00000000003 /* PushUpDetectorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

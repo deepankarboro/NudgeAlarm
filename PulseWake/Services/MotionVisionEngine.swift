@@ -45,7 +45,6 @@ public final class MotionVisionEngine: NSObject, AVCaptureVideoDataOutputSampleB
     private let videoQueue = DispatchQueue(label: "com.pulsewake.vision.videoQueue")
 
     private let motionManager = CMMotionManager()
-    private var bodyPoseRequest = VNDetectHumanBodyPoseRequest()
     private var visionImageOrientation: CGImagePropertyOrientation = .right
     /// NOTE: must only be mutated on `sessionQueue` (inside startEngine's `async` block).
     /// Capture callbacks snapshot this via the local in `captureOutput` so they never see a
@@ -274,10 +273,17 @@ public final class MotionVisionEngine: NSObject, AVCaptureVideoDataOutputSampleB
 
         let orientation = visionImageOrientation
         let exercise = processingExercise
+        // A fresh request per frame. This used to be one long-lived `VNDetectHumanBodyPoseRequest`
+        // stored on the engine: `perform` ran here on `videoQueue` while the main thread was
+        // still reading the observation from the *previous* frame off that same request object.
+        // Vision recycles a request's results on each `perform`, so the two raced. Giving each
+        // frame its own request means the observation handed to the main thread is owned solely
+        // by that dispatch. Vision caches the underlying model, so this is cheap.
+        let request = VNDetectHumanBodyPoseRequest()
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientation, options: [:])
         do {
-            try handler.perform([bodyPoseRequest])
-            guard let observation = bodyPoseRequest.results?.first else { return }
+            try handler.perform([request])
+            guard let observation = request.results?.first else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 self.extractSkeleton(from: observation)

@@ -32,15 +32,21 @@ public final class WorkoutSensorHub {
 
     // MARK: - Permissions
 
-    public func requestPermissions() {
-        HealthKitManager.shared.requestAuthorization()
-        requestMicrophoneAccess()
+    /// Asks for HealthKit, then the microphone — one after the other. Firing both at once
+    /// stacks their system dialogs on top of each other.
+    public func requestPermissions(completion: @escaping () -> Void = {}) {
+        HealthKitManager.shared.requestAuthorization { _ in
+            self.requestMicrophoneAccess { _ in
+                completion()
+            }
+        }
     }
 
-    private func requestMicrophoneAccess() {
+    private func requestMicrophoneAccess(completion: @escaping (Bool) -> Void = { _ in }) {
         AVAudioApplication.requestRecordPermission { [weak self] granted in
             DispatchQueue.main.async {
                 self?.microphoneAuthorized = granted
+                completion(granted)
             }
         }
     }

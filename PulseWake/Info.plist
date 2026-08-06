@@ -22,6 +22,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAlarmKitUsageDescription</key>
+	<string>PulseWake schedules system alarms so your wake-up alarm keeps sounding until you complete your exercise reps, even if the app is closed.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>PulseWake uses your camera and pose detection to verify that you complete your required Push-Ups or Pull-Ups before turning off the alarm.</string>
 	<key>NSHealthShareUsageDescription</key>
@@ -46,10 +48,6 @@
 		<key>UIColorName</key>
 		<string>LaunchBackground</string>
 	</dict>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

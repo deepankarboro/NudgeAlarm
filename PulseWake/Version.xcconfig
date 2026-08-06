@@ -1,5 +1,5 @@
 // PulseWake — single source of truth for App Store / TestFlight versions.
 // Product → Archive runs scripts/bump_build_number.sh (patch + build +1).
 
-MARKETING_VERSION = 1.0.3
-CURRENT_PROJECT_VERSION = 4
+MARKETING_VERSION = 1.0.4
+CURRENT_PROJECT_VERSION = 5

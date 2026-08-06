@@ -132,7 +132,6 @@ public struct ExerciseVerificationView: View {
             guard !hasCompleted else { return }
             if newReps > lastSpokenRep {
                 lastSpokenRep = newReps
-                SoundEngine.shared.speakRepCount(newReps, target: targetReps)
                 SoundEngine.shared.playSuccessBeep()
 
                 if newReps >= targetReps {
@@ -475,7 +474,6 @@ public struct ExerciseVerificationView: View {
         )
         engine.startEngine(exercise: exerciseType, targetReps: targetReps)
         sensors.startExerciseSession()
-        AlarmManager.shared.speakInstruction("Alarm active! Perform \(targetReps) \(exerciseType.rawValue) to dismiss.")
     }
 
     private func endVerificationSession() {

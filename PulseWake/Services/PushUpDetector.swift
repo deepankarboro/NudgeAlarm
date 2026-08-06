@@ -28,7 +28,9 @@ public final class PushUpDetector {
 
     private var targetReps: Int = 10
     private var lastRepCompletedAt: Date = .distantPast
-    private let minSecondsBetweenReps: TimeInterval = 0.45
+    /// A genuine push-up cycle takes about a second. The old 0.45 s window was short enough
+    /// that sensor noise could fire two "reps" back to back.
+    private let minSecondsBetweenReps: TimeInterval = 0.8
 
     private var smoothedElbowAngle: Double = 180.0
     private var smoothedBodyY: Double = 0.5
@@ -72,6 +74,50 @@ public final class PushUpDetector {
         self.lastRepCompletedAt = .distantPast
     }
 
+    /// Plain-value view of a single Vision frame. `processPoseObservation` converts the
+    /// Vision observation into one of these and every bit of detection math then runs off
+    /// this one representation, so the unit-test seam exercises the *same* code path the
+    /// camera does rather than a parallel copy that can silently drift.
+    /// Vision normalized coords: (0,0) bottom-left, (1,1) top-right. Confidence in 0…1.
+    public struct FrameInput {
+        public var nose: CGPoint
+        public var noseConf: Float
+        public var neck: CGPoint
+        public var neckConf: Float
+        public var leftShoulder: CGPoint
+        public var leftShoulderConf: Float
+        public var rightShoulder: CGPoint
+        public var rightShoulderConf: Float
+        public var leftElbow: CGPoint
+        public var leftElbowConf: Float
+        public var rightElbow: CGPoint
+        public var rightElbowConf: Float
+        public var leftWrist: CGPoint
+        public var leftWristConf: Float
+        public var rightWrist: CGPoint
+        public var rightWristConf: Float
+
+        public init(
+            nose: CGPoint, noseConf: Float,
+            neck: CGPoint, neckConf: Float,
+            leftShoulder: CGPoint, leftShoulderConf: Float,
+            rightShoulder: CGPoint, rightShoulderConf: Float,
+            leftElbow: CGPoint, leftElbowConf: Float,
+            rightElbow: CGPoint, rightElbowConf: Float,
+            leftWrist: CGPoint, leftWristConf: Float,
+            rightWrist: CGPoint, rightWristConf: Float
+        ) {
+            self.nose = nose; self.noseConf = noseConf
+            self.neck = neck; self.neckConf = neckConf
+            self.leftShoulder = leftShoulder; self.leftShoulderConf = leftShoulderConf
+            self.rightShoulder = rightShoulder; self.rightShoulderConf = rightShoulderConf
+            self.leftElbow = leftElbow; self.leftElbowConf = leftElbowConf
+            self.rightElbow = rightElbow; self.rightElbowConf = rightElbowConf
+            self.leftWrist = leftWrist; self.leftWristConf = leftWristConf
+            self.rightWrist = rightWrist; self.rightWristConf = rightWristConf
+        }
+    }
+
     public func processPoseObservation(_ observation: VNHumanBodyPoseObservation) {
         do {
             let nose = try observation.recognizedPoint(.nose)
@@ -83,58 +129,57 @@ public final class PushUpDetector {
             let rightElbow = try observation.recognizedPoint(.rightElbow)
             let rightWrist = try observation.recognizedPoint(.rightWrist)
 
-            let leftArmConf = jointConfidence(leftShoulder, leftElbow, leftWrist)
-            let rightArmConf = jointConfidence(rightShoulder, rightElbow, rightWrist)
-            let shoulderConf = (leftShoulder.confidence + rightShoulder.confidence) / 2.0
-            let headConf = max(nose.confidence, neck.confidence)
-
-            guard leftArmConf > 0.2 || rightArmConf > 0.2 || shoulderConf > 0.25 || headConf > 0.3 else {
-                isFormValid = false
-                formFeedback = "Keep your face, shoulders, and arms in view"
-                return
-            }
-
-            isFormValid = true
-            updatePlacement(
-                leftShoulder: leftShoulder, rightShoulder: rightShoulder,
-                leftWrist: leftWrist, rightWrist: rightWrist
-            )
-
-            let rawAngle = combinedElbowAngle(
-                leftShoulder: leftShoulder, leftElbow: leftElbow, leftWrist: leftWrist, leftConf: leftArmConf,
-                rightShoulder: rightShoulder, rightElbow: rightElbow, rightWrist: rightWrist, rightConf: rightArmConf
-            )
-            smoothedElbowAngle = smoothedElbowAngle * (1.0 - angleSmoothingAlpha) + rawAngle * angleSmoothingAlpha
-            currentElbowAngle = smoothedElbowAngle
-
-            let rawBodyY = compositeUpperBodyY(
-                nose: nose, neck: neck,
-                leftShoulder: leftShoulder, rightShoulder: rightShoulder
-            )
-            if let rawBodyY {
-                smoothedBodyY = smoothedBodyY * (1.0 - bodySmoothingAlpha) + rawBodyY * bodySmoothingAlpha
-            }
-
-            updateTopBaseline(bodyY: smoothedBodyY, elbowAngle: smoothedElbowAngle)
-            let bodyDrop = bodyDropFromTop(bodyY: smoothedBodyY)
-            maxBodyDropInCurrentRep = max(maxBodyDropInCurrentRep, bodyDrop)
-            bodyDropRatio = min(1.0, bodyDrop / frontMinBodyDropForRep)
-
-            updateStateMachine(elbowAngle: smoothedElbowAngle, bodyDrop: bodyDrop)
-
+            processFrame(FrameInput(
+                nose: nose.location, noseConf: nose.confidence,
+                neck: neck.location, neckConf: neck.confidence,
+                leftShoulder: leftShoulder.location, leftShoulderConf: leftShoulder.confidence,
+                rightShoulder: rightShoulder.location, rightShoulderConf: rightShoulder.confidence,
+                leftElbow: leftElbow.location, leftElbowConf: leftElbow.confidence,
+                rightElbow: rightElbow.location, rightElbowConf: rightElbow.confidence,
+                leftWrist: leftWrist.location, leftWristConf: leftWrist.confidence,
+                rightWrist: rightWrist.location, rightWristConf: rightWrist.confidence
+            ))
         } catch {
             isFormValid = false
             formFeedback = "Angle the phone so your upper body is visible"
         }
     }
 
-    private func updatePlacement(
-        leftShoulder: VNRecognizedPoint, rightShoulder: VNRecognizedPoint,
-        leftWrist: VNRecognizedPoint, rightWrist: VNRecognizedPoint
-    ) {
-        let shoulderSpan = Double(abs(leftShoulder.location.x - rightShoulder.location.x))
-        let wristSpan = Double(abs(leftWrist.location.x - rightWrist.location.x))
-        let shoulderVisible = leftShoulder.confidence > 0.25 && rightShoulder.confidence > 0.25
+    public func processFrame(_ input: FrameInput) {
+        let leftArmConf = jointConfidence(input.leftShoulderConf, input.leftElbowConf, input.leftWristConf)
+        let rightArmConf = jointConfidence(input.rightShoulderConf, input.rightElbowConf, input.rightWristConf)
+        let shoulderConf = (input.leftShoulderConf + input.rightShoulderConf) / 2.0
+        let headConf = max(input.noseConf, input.neckConf)
+
+        guard leftArmConf > 0.2 || rightArmConf > 0.2 || shoulderConf > 0.25 || headConf > 0.3 else {
+            isFormValid = false
+            formFeedback = "Keep your face, shoulders, and arms in view"
+            return
+        }
+
+        isFormValid = true
+        updatePlacement(input)
+
+        let rawAngle = combinedElbowAngle(input, leftConf: leftArmConf, rightConf: rightArmConf)
+        smoothedElbowAngle = smoothedElbowAngle * (1.0 - angleSmoothingAlpha) + rawAngle * angleSmoothingAlpha
+        currentElbowAngle = smoothedElbowAngle
+
+        if let rawBodyY = compositeUpperBodyY(input) {
+            smoothedBodyY = smoothedBodyY * (1.0 - bodySmoothingAlpha) + rawBodyY * bodySmoothingAlpha
+        }
+
+        updateTopBaseline(bodyY: smoothedBodyY, elbowAngle: smoothedElbowAngle)
+        let bodyDrop = bodyDropFromTop(bodyY: smoothedBodyY)
+        maxBodyDropInCurrentRep = max(maxBodyDropInCurrentRep, bodyDrop)
+        bodyDropRatio = min(1.0, bodyDrop / frontMinBodyDropForRep)
+
+        updateStateMachine(elbowAngle: smoothedElbowAngle, bodyDrop: bodyDrop)
+    }
+
+    private func updatePlacement(_ input: FrameInput) {
+        let shoulderSpan = Double(abs(input.leftShoulder.x - input.rightShoulder.x))
+        let wristSpan = Double(abs(input.leftWrist.x - input.rightWrist.x))
+        let shoulderVisible = input.leftShoulderConf > 0.25 && input.rightShoulderConf > 0.25
 
         var frontHint = 0.55
         if shoulderVisible {
@@ -154,24 +199,21 @@ public final class PushUpDetector {
         placement = placementFrontScore >= 0.5 ? .inFrontOfFace : .sideProfile
     }
 
-    private func compositeUpperBodyY(
-        nose: VNRecognizedPoint, neck: VNRecognizedPoint,
-        leftShoulder: VNRecognizedPoint, rightShoulder: VNRecognizedPoint
-    ) -> Double? {
+    private func compositeUpperBodyY(_ input: FrameInput) -> Double? {
         var sum = 0.0
         var weight = 0.0
 
-        if nose.confidence > 0.25 {
-            sum += Double(nose.location.y) * 0.45
+        if input.noseConf > 0.25 {
+            sum += Double(input.nose.y) * 0.45
             weight += 0.45
         }
-        if neck.confidence > 0.25 {
-            sum += Double(neck.location.y) * 0.25
+        if input.neckConf > 0.25 {
+            sum += Double(input.neck.y) * 0.25
             weight += 0.25
         }
-        let shoulderConf = (leftShoulder.confidence + rightShoulder.confidence) / 2.0
+        let shoulderConf = (input.leftShoulderConf + input.rightShoulderConf) / 2.0
         if shoulderConf > 0.25 {
-            let shoulderY = Double((leftShoulder.location.y + rightShoulder.location.y) / 2.0)
+            let shoulderY = Double((input.leftShoulder.y + input.rightShoulder.y) / 2.0)
             sum += shoulderY * 0.30
             weight += 0.30
         }
@@ -205,14 +247,38 @@ public final class PushUpDetector {
         return max(0, baseline - bodyY)
     }
 
+    // MARK: - Rep gating
+    //
+    // Each placement is gated on the ONE signal that camera geometry makes trustworthy for
+    // it, and never on the other as an independent trigger:
+    //
+    //   .inFrontOfFace — phone on the floor facing the user. The arms point at the lens, so
+    //     the projected 2D elbow angle is heavily foreshortened and noisy; it swings across
+    //     the 115°/145° thresholds while the user is motionless. Upper-body drop is the
+    //     honest signal here.
+    //   .sideProfile — phone side-on. The elbow bend is now in the image plane and measures
+    //     cleanly, while vertical head/shoulder travel is small and easily confused with the
+    //     user shifting position. Elbow angle is the honest signal here.
+    //
+    // These were previously `||` of both signals at every gate, which let noise on the
+    // untrustworthy signal drive a whole rep cycle and pass the depth check on its own —
+    // the cause of phantom reps.
+
+    private func isDescending(elbowAngle: Double, bodyDrop: Double) -> Bool {
+        switch placement {
+        case .inFrontOfFace:
+            return bodyDrop > frontBottomEnterDrop * 0.4
+        case .sideProfile:
+            return elbowAngle < sideTopLockoutAngle - 15.0
+        }
+    }
+
     private func reachedBottom(elbowAngle: Double, bodyDrop: Double) -> Bool {
         switch placement {
         case .inFrontOfFace:
             return bodyDrop >= frontBottomEnterDrop
-                || elbowAngle <= sideBottomEnterAngle + 5.0
         case .sideProfile:
             return elbowAngle <= sideBottomEnterAngle
-                || bodyDrop >= frontMinBodyDropForRep * 0.85
         }
     }
 
@@ -220,10 +286,8 @@ public final class PushUpDetector {
         switch placement {
         case .inFrontOfFace:
             return bodyDrop <= frontTopReturnDrop
-                || elbowAngle >= sideTopLockoutAngle - 5.0
         case .sideProfile:
             return elbowAngle >= sideTopLockoutAngle
-                || bodyDrop <= frontTopReturnDrop
         }
     }
 
@@ -231,9 +295,8 @@ public final class PushUpDetector {
         switch placement {
         case .inFrontOfFace:
             return bodyDrop <= frontBottomEnterDrop * 0.65
-                || elbowAngle > sideBottomHoldAngle
         case .sideProfile:
-            return elbowAngle > sideBottomHoldAngle && bodyDrop < frontMinBodyDropForRep * 0.45
+            return elbowAngle > sideBottomHoldAngle
         }
     }
 
@@ -247,7 +310,7 @@ public final class PushUpDetector {
             if depthReached {
                 currentState = .bottom
                 formFeedback = "Good depth — push back up"
-            } else if bodyDrop > frontBottomEnterDrop * 0.4 || elbowAngle < sideTopLockoutAngle - 15.0 {
+            } else if isDescending(elbowAngle: elbowAngle, bodyDrop: bodyDrop) {
                 currentState = .goingDown
                 formFeedback = placement == .inFrontOfFace
                     ? "Lower chest toward the floor"
@@ -292,18 +355,21 @@ public final class PushUpDetector {
     private func registerCompletedRep() {
         let now = Date()
         guard now.timeIntervalSince(lastRepCompletedAt) >= minSecondsBetweenReps else {
+            // Too soon to be a real rep. Reset to the top so the cycle can restart cleanly
+            // rather than leaving the machine parked in .pushingUp.
+            currentState = .top
+            minElbowAngleInCurrentRep = 180.0
+            maxBodyDropInCurrentRep = 0.0
             return
         }
 
-        let angleDepthOK = minElbowAngleInCurrentRep <= sideMinDepthAngleForRep
-        let bodyDepthOK = maxBodyDropInCurrentRep >= frontMinBodyDropForRep
-
+        // The rep must have actually reached depth on this placement's trusted signal.
         let depthOK: Bool
         switch placement {
         case .inFrontOfFace:
-            depthOK = bodyDepthOK || angleDepthOK
+            depthOK = maxBodyDropInCurrentRep >= frontMinBodyDropForRep
         case .sideProfile:
-            depthOK = angleDepthOK || bodyDepthOK
+            depthOK = minElbowAngleInCurrentRep <= sideMinDepthAngleForRep
         }
 
         guard depthOK else {
@@ -324,16 +390,13 @@ public final class PushUpDetector {
         formFeedback = "Rep \(currentRepCount) — nice work"
     }
 
-    private func jointConfidence(_ p1: VNRecognizedPoint, _ p2: VNRecognizedPoint, _ p3: VNRecognizedPoint) -> Float {
-        (p1.confidence + p2.confidence + p3.confidence) / 3.0
+    private func jointConfidence(_ c1: Float, _ c2: Float, _ c3: Float) -> Float {
+        (c1 + c2 + c3) / 3.0
     }
 
-    private func combinedElbowAngle(
-        leftShoulder: VNRecognizedPoint, leftElbow: VNRecognizedPoint, leftWrist: VNRecognizedPoint, leftConf: Float,
-        rightShoulder: VNRecognizedPoint, rightElbow: VNRecognizedPoint, rightWrist: VNRecognizedPoint, rightConf: Float
-    ) -> Double {
-        let leftAngle = calculateAngle(p1: leftShoulder.location, p2: leftElbow.location, p3: leftWrist.location)
-        let rightAngle = calculateAngle(p1: rightShoulder.location, p2: rightElbow.location, p3: rightWrist.location)
+    private func combinedElbowAngle(_ input: FrameInput, leftConf: Float, rightConf: Float) -> Double {
+        let leftAngle = calculateAngle(p1: input.leftShoulder, p2: input.leftElbow, p3: input.leftWrist)
+        let rightAngle = calculateAngle(p1: input.rightShoulder, p2: input.rightElbow, p3: input.rightWrist)
 
         if leftConf > 0.35 && rightConf > 0.35 {
             let weightLeft = Double(leftConf)

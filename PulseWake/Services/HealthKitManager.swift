@@ -36,7 +36,11 @@ public final class HealthKitManager {
             DispatchQueue.main.async {
                 self?.isAuthorized = success
                 if success {
-                    self?.enableBackgroundStepDelivery()
+                    // Background delivery needs the com.apple.developer.healthkit.background-delivery
+                    // entitlement, which this app does not carry — it failed on every launch and
+                    // logged an error. The observer query below still keeps steps fresh while the
+                    // app is running, which is all Stats needs.
+                    self?.observeStepCountChanges()
                     self?.refreshTodayStepCount()
                 }
                 completion(success)
@@ -115,18 +119,8 @@ public final class HealthKitManager {
         }
     }
 
-    private func enableBackgroundStepDelivery() {
+    private func observeStepCountChanges() {
         guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }
-        store.enableBackgroundDelivery(for: stepType, frequency: .hourly) { success, error in
-            if let error {
-                print("HealthKit background delivery failed: \(error)")
-            } else if success {
-                self.observeStepCountChanges(stepType: stepType)
-            }
-        }
-    }
-
-    private func observeStepCountChanges(stepType: HKQuantityType) {
         let query = HKObserverQuery(sampleType: stepType, predicate: nil) { [weak self] _, _, error in
             if error == nil {
                 self?.refreshTodayStepCount()
